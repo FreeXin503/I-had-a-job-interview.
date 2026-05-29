@@ -1,0 +1,73 @@
+<!--pages/report/report.wxml-->
+<view class="report-container">
+  <!-- 评分卡片 -->
+  <view class="score-card">
+    <view class="score-circle">
+      <text class="score-num">{{report.score}}</text>
+      <text class="score-unit">分</text>
+    </view>
+    <view class="score-meta">
+      <view class="rating-badge">{{report.rating}}</view>
+      <text class="duration">面试时长：{{durationMinutes}}分钟</text>
+      <text class="compete">已超越 {{report.percentile}}% 的同岗位竞争者</text>
+    </view>
+  </view>
+
+  <!-- 详细评价 -->
+  <view class="section-title">详细分析报告</view>
+  
+  <view class="eval-list">
+    <view class="eval-card">
+      <view class="eval-title">专业深度</view>
+      <text class="eval-content">{{report.evaluation.professional}}</text>
+    </view>
+
+    <view class="eval-card">
+      <view class="eval-title">逻辑清晰</view>
+      <text class="eval-content">{{report.evaluation.logic}}</text>
+    </view>
+
+    <view class="eval-card">
+      <view class="eval-title">应变能力</view>
+      <text class="eval-content">{{report.evaluation.adaptability}}</text>
+    </view>
+
+    <view class="eval-card">
+      <view class="eval-title">临场表现</view>
+      <text class="eval-content">{{report.evaluation.performance}}</text>
+    </view>
+  </view>
+
+  <!-- 问题解析 -->
+  <view class="section-title">题目解析</view>
+  
+  <view class="question-list">
+    <view class="question-card" wx:for="{{report.questionAnalysis}}" wx:key="questionOrder">
+      <view class="question-badge">第 {{item.questionOrder}} 题</view>
+      <text class="question-text">{{item.questionText}}</text>
+      
+      <view class="divider"></view>
+      
+      <view class="analysis-section">
+        <text class="analysis-title">💡 问题解析</text>
+        <text class="analysis-content">{{item.breakdown}}</text>
+      </view>
+      
+      <view class="analysis-section">
+        <text class="analysis-title">🎯 回答策略</text>
+        <text class="analysis-content">{{item.strategy}}</text>
+      </view>
+      
+      <view class="analysis-section">
+        <text class="analysis-title">🌟 优秀回答示例</text>
+        <text class="analysis-content example">{{item.bestExample}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-actions">
+    <button class="btn-primary" bindtap="backToHome">返回首页</button>
+    <button class="btn-secondary" bindtap="shareReport">分享报告</button>
+  </view>
+</view>

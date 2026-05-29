@@ -1,0 +1,26 @@
+# AI Agent 依赖包 - Python 3.13兼容版
+
+# Web框架
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+
+# OpenAI SDK (用于DeepSeek)
+openai>=1.12.0
+
+# 数据处理（Python 3.13兼容版本）
+pydantic>=2.6.0
+python-dotenv>=1.0.0
+
+# PDF解析
+PyPDF2>=3.0.0
+
+# Word文档解析
+python-docx>=1.1.0
+
+# HTTP客户端
+httpx>=0.26.0
+requests>=2.31.0
+
+# 工具库
+tenacity>=8.2.0

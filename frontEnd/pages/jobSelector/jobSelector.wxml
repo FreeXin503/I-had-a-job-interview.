@@ -1,0 +1,45 @@
+<!--pages/jobSelector/jobSelector.wxml-->
+<view class="job-selector-container">
+  <!-- 搜索栏 -->
+  <view class="search-header">
+    <view class="search-input-wrapper">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索岗位名称" 
+        bindinput="onSearchInput"
+      />
+    </view>
+  </view>
+
+  <!-- 分类和岗位列表 -->
+  <view class="content-layout">
+    <!-- 左侧分类 -->
+    <scroll-view class="categories-sidebar" scroll-y>
+      <view 
+        class="category-tab {{activeCategory === item.key ? 'active' : ''}}" 
+        wx:for="{{categories}}" 
+        wx:key="key"
+        bindtap="selectCategory"
+        data-key="{{item.key}}"
+      >
+        {{item.name}}
+      </view>
+    </scroll-view>
+
+    <!-- 右侧岗位 -->
+    <scroll-view class="positions-panel" scroll-y>
+      <view class="positions-grid">
+        <view 
+          class="position-pill {{selectedJob === item ? 'active' : ''}}" 
+          wx:for="{{positions}}" 
+          wx:key="index"
+          bindtap="selectJob"
+          data-job="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

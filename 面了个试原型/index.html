@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>面了个试 - AI高保真模拟面试</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Phone Emulator Frame -->
+  <div class="app-container">
+
+    <!-- WeChat Status Bar Simulation -->
+    <div class="status-bar-sim">
+      <span class="time-sim" id="statusBarTime">17:50</span>
+      <div class="right-icons">
+        <!-- Signal Strength Indicator -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="2" y="16" width="3" height="5" rx="0.5" />
+          <rect x="7" y="12" width="3" height="9" rx="0.5" />
+          <rect x="12" y="8" width="3" height="13" rx="0.5" />
+          <rect x="17" y="4" width="3" height="17" rx="0.5" />
+        </svg>
+        <!-- Wifi icon -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path
+            d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.1a6 6 0 0 1 6.95 0M12 19a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
+            fill="currentColor" />
+        </svg>
+        <!-- Battery Icon -->
+        <svg width="18" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="6" width="16" height="12" rx="2" />
+          <path d="M22 10v4" stroke-linecap:="round" />
+          <rect x="4" y="8" width="10" height="8" fill="currentColor" rx="1" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Active Views Container -->
+    <div class="views-wrapper">
+
+      <!-- ================= 1. HOME VIEW ================= -->
+      <div id="view-home" class="view active">
+        <!-- WeChat Mini Program Top Header -->
+        <div class="app-header">
+          <span class="title">面了个试</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="home-content">
+          <div class="badge-engine">
+            <span class="dot"></span>
+            AI 驱动引擎 3.0
+          </div>
+          <h1 class="home-title">AI 模拟面试</h1>
+          <p class="home-subtitle">全真还原面试场景，实时语音互动<br>智能评分助力高效拿Offer</p>
+
+          <!-- Interviewer Avatar Preview Card -->
+          <div class="interviewer-preview-card">
+            <img src="assets/interviewer.png" alt="AI Interviewer"
+              onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop'">
+            <div class="live-tag">
+              <span class="online-dot"></span>
+              <span>ONLINE</span>
+            </div>
+            <div class="mic-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Primary Call to Action stacked for premium visual hierarchy -->
+          <div class="home-main-cta-box">
+            <button class="home-primary-cta-btn" id="startMockBtn">
+              <span class="btn-shine"></span>
+              🎤 立即开启 AI 模拟面试
+            </button>
+            <button class="home-secondary-link-btn" id="startResumeOptBtn">
+              ✨ AI 简历一键优化
+            </button>
+          </div>
+
+          <!-- Recent Interview History List -->
+          <div class="section-title-row">
+            <h3>最近记录</h3>
+            <a href="#" class="link-all" id="viewAllRecordsBtn">
+              查看全部
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="recent-record-card" id="historyRecordCard">
+            <div class="left-info">
+              <span class="job-title">Java 工程师</span>
+              <span class="details">应届 · 标准模式 · 2026/05/28</span>
+            </div>
+            <div class="score-badge">90 分</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. MINE VIEW ================= -->
+      <div id="view-mine" class="view">
+        <!--微信小程序个人中心标题-->
+        <div class="app-header" style="background-color: var(--white);">
+          <span class="title" style="flex:1; text-align:center; margin-left: 56px;">个人中心</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <!-- Centered Avatar Layout -->
+        <div class="mine-profile-card-centered">
+          <div class="avatar-circle-wrapper">
+            👤
+          </div>
+        </div>
+
+        <!-- Blue Recharge card -->
+        <div class="mine-recharge-card-premium">
+          <div class="left-info">
+            <span class="title">充值获取积分</span>
+            <span class="desc">联系客服充值积分</span>
+          </div>
+          <button class="action-btn" id="mineRechargeBtnAction">充值积分</button>
+        </div>
+
+        <!-- Stats Grid (剩余积分, 模拟面试, 简历优化) -->
+        <div class="mine-stats-grid-container">
+          <div class="stat-column">
+            <div class="value-num" id="statRemainingPoints">20</div>
+            <div class="label-text">剩余积分</div>
+          </div>
+          <div class="stat-column">
+            <div class="value-num" id="statMockCount">3</div>
+            <div class="label-text">模拟面试</div>
+          </div>
+          <div class="stat-column">
+            <div class="value-num" id="statResumeOptCount">0</div>
+            <div class="label-text">简历优化</div>
+          </div>
+        </div>
+
+        <!-- Common Functions list -->
+        <div class="common-functions-section">
+          <h4 class="section-title">常用功能</h4>
+
+          <div class="func-menu-list">
+            <!-- 1. 我的简历管理 (DEV) -->
+            <div class="func-menu-item" id="menuResumeMgrBtn">
+              <div class="icon-box" style="background-color:#fef3c7; color:#d97706;">
+                📁
+              </div>
+              <span class="menu-title">我的简历管理</span>
+              <span class="menu-desc">管理</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+
+            <!-- 2. 面试记录 -->
+            <div class="func-menu-item" id="menuMyReportsBtn">
+              <div class="icon-box" style="background-color:#dbeafe; color:var(--primary-color);">
+                📝
+              </div>
+              <span class="menu-title">面试记录</span>
+              <span class="menu-desc">查看历史</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+
+            <!-- 3. 充值积分 (Points Mall DEV) -->
+            <div class="func-menu-item" id="menuPointsMallBtn">
+              <div class="icon-box" style="background-color:#e0f2fe; color:#0284c7;">
+                💎
+              </div>
+              <span class="menu-title">充值积分</span>
+              <span class="menu-desc">需联系客服</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+
+            <!-- 4. 联系客服 -->
+            <div class="func-menu-item" id="menuContactServiceBtn">
+              <div class="icon-box" style="background-color:#dcfce7; color:#15803d;">
+                📞
+              </div>
+              <span class="menu-title">联系客服</span>
+              <span class="menu-desc">在线支持</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+
+            <!-- 5. 设置中心 (DEV) -->
+            <div class="func-menu-item" id="menuSettingsBtn">
+              <div class="icon-box" style="background-color:#f1f5f9; color:#64748b;">
+                ⚙️
+              </div>
+              <span class="menu-title">设置中心</span>
+              <span class="menu-desc">系统管理</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. INTERVIEW PREP VIEW ================= -->
+      <div id="view-prep" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="prepBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">面试准备</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="prep-container">
+          <!-- 3.1 Current Situation -->
+          <div class="prep-section">
+            <h4 class="prep-section-title">当前情况</h4>
+            <div class="options-grid-4" id="experienceSelectGroup">
+              <div class="option-pill-btn" data-val="intern">实习</div>
+              <div class="option-pill-btn active" data-val="graduate">应届</div>
+              <div class="option-pill-btn" data-val="junior">1-3年</div>
+              <div class="option-pill-btn" data-val="senior">3年以上</div>
+            </div>
+          </div>
+
+          <!-- 3.2 Interviewer Style -->
+          <div class="prep-section">
+            <h4 class="prep-section-title">面试官风格</h4>
+            <div class="style-grid" id="styleSelectGroup">
+              <div class="style-card" data-val="random">
+                <span class="icon">🎲</span>
+                <span class="label">随机</span>
+              </div>
+              <div class="style-card" data-val="gentle">
+                <span class="icon">😊</span>
+                <span class="label">温和</span>
+              </div>
+              <div class="style-card active" data-val="standard">
+                <span class="icon">😐</span>
+                <span class="label">标准</span>
+              </div>
+              <div class="style-card" data-val="stress">
+                <span class="icon">🔥</span>
+                <span class="label">压力</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.3 Position Selector -->
+          <div class="prep-section">
+            <h4 class="prep-section-title">面试岗位</h4>
+            <div class="select-trigger" id="jobSelectTrigger">
+              <span id="selectedJobText">Java工程师</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
+            <div class="select-dropdown-list" id="jobSelectDropdown">
+              <div class="dropdown-item" data-val="Java工程师">Java工程师</div>
+              <div class="dropdown-item" data-val="前端开发工程师">前端开发工程师</div>
+              <div class="dropdown-item" data-val="产品经理">产品经理</div>
+              <div class="dropdown-item" data-val="数据分析师">数据分析师</div>
+            </div>
+          </div>
+
+          <!-- 3.4 Resume Options -->
+          <div class="prep-section">
+            <h4 class="prep-section-title">个人简历</h4>
+            <div class="resume-options" id="resumeOptionGroup">
+              <div class="resume-option-card active" data-val="no-resume">
+                <div class="option-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                  </svg>
+                </div>
+                <div class="info-block">
+                  <div class="title">不使用简历</div>
+                  <div class="desc">通用面试题库，不针对个人经历</div>
+                </div>
+                <div class="radio-dot"></div>
+              </div>
+
+              <div class="resume-option-card" data-val="use-resume">
+                <div class="option-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                  </svg>
+                </div>
+                <div class="info-block">
+                  <div class="title">上传简历面试</div>
+                  <div class="desc">推荐：针对性提问，效果更好</div>
+                </div>
+                <div class="radio-dot"></div>
+              </div>
+            </div>
+
+            <!-- Upload drag drop widget box (hidden initially, shown when 'use-resume' is active) -->
+            <div class="upload-widget-area" id="resumeUploadWidget" style="display: none;">
+              <!-- Upload Placeholder Content -->
+              <div class="upload-placeholder" id="uploadPlaceholderContent">
+                📁 点击或拖拽上传简历 (PDF / Word)
+              </div>
+              <!-- Upload Progress details -->
+              <div class="upload-progress-container" id="uploadProgressDetail">
+                <div class="file-info">
+                  <span class="filename" id="uploadingFileName">张三_Java开发简历.pdf</span>
+                  <span class="pct" id="uploadingPct">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="uploadingProgressFill"></div>
+                </div>
+                <span class="status-text" id="uploadStatusText">简历正在极速上传中...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky bottom CTA button -->
+        <div class="bottom-action-banner">
+          <button class="btn-primary" id="enterInterviewBtn">
+            进入面试
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+          <p class="points-tip">剩余30积分，可进行3分钟的模拟面试</p>
+        </div>
+      </div>
+
+      <!-- ================= 7. INTERVIEW TIPS VIEW ================= -->
+      <div id="view-tips" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="tipsBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">面试小贴士</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="tips-container">
+          <div class="tips-card">
+            <div class="tip-item">
+              <div class="tip-title">
+                环境准备
+              </div>
+              <div class="tip-content">
+                请在安静的环境进行面试，以获得更准确的语音识别。开始前请关闭静音模式，并将手机音量调大，点击按钮后请同意麦克风授权。
+              </div>
+            </div>
+
+            <div class="tip-item">
+              <div class="tip-title">
+                准备自我介绍
+              </div>
+              <div class="tip-content">
+                简短介绍教育背景、核心技能与求职意向，告诉面试官你为什么胜任这个岗位。
+              </div>
+            </div>
+
+            <div class="tip-item">
+              <div class="tip-title">
+                经验和成就
+              </div>
+              <div class="tip-content">
+                谈论自己的经验和成就时，要自信且积极。
+              </div>
+            </div>
+
+            <div class="tip-item">
+              <div class="tip-title">
+                职位
+              </div>
+              <div class="tip-content">
+                提前了解公司与岗位要求，在回答中体现对职位的真实兴趣与热情，适当提问展现你的关注。
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom progress section -->
+          <div class="tips-progress-container">
+            <div class="tips-progress-label">
+              <span id="tipsProgressPctText">0%</span>
+              <span>题库准备中</span>
+            </div>
+            <div class="tips-progress-bar-bg">
+              <div class="tips-progress-bar-fill" id="tipsProgressBarFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 8. CATEGORISED JOB SELECTOR VIEW ================= -->
+      <div id="view-job-selector" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="jobSelectorBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">选择岗位</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <!-- Search Bar Header -->
+        <div class="search-header">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="jobSearchInput" placeholder="搜索岗位名称">
+          </div>
+        </div>
+
+        <!-- Category Split Layout -->
+        <div class="job-selector-split-layout">
+          <!-- Left categories sidebar -->
+          <div class="job-categories-sidebar" id="jobCategoriesSidebar">
+            <div class="category-tab active" data-cat="hot">热门高薪推荐</div>
+            <div class="category-tab" data-cat="hotel">酒店/旅游</div>
+            <div class="category-tab" data-cat="energy">能源/环保/农业</div>
+            <div class="category-tab" data-cat="consult">咨询/翻译/法律</div>
+            <div class="category-tab" data-cat="finance">金融</div>
+            <div class="category-tab" data-cat="medical">医疗健康</div>
+            <div class="category-tab" data-cat="car">汽车</div>
+            <div class="category-tab" data-cat="trade">采购/贸易</div>
+            <div class="category-tab" data-cat="logistics">物流/仓储/司机</div>
+            <div class="category-tab" data-cat="market">市场/公关/广告</div>
+            <div class="category-tab" data-cat="media">直播/影视/传媒</div>
+            <div class="category-tab" data-cat="estate">房地产/建筑</div>
+          </div>
+
+          <!-- Right positions content panel -->
+          <div class="job-positions-panel" id="jobPositionsPanel">
+            <!-- Dynamic elements will be loaded by Javascript -->
+          </div>
+        </div>
+
+        <!-- Bottom Action banner -->
+        <div class="job-selector-footer">
+          <button class="btn-outline-primary" id="jobSelectorManualBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            自行填写
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ================= 4. MOCK INTERVIEW CALL VIEW ================= -->
+      <div id="view-call" class="view">
+        <!-- Minimal black title bar -->
+        <div class="app-header">
+          <div class="back-btn" id="callHangupBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">AI 模拟面试</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="interview-view-container">
+          <div class="interview-call-top-row">
+            <span class="ai-tag">内容由AI实时生成</span>
+            <button class="hangup-btn" id="callHangupActionBtn">结束面试</button>
+          </div>
+
+          <!-- Video frame -->
+          <div class="interview-video-pane">
+            <img class="video-feed" id="interviewerVideoFeed" src="assets/interviewer.png" alt="Video stream">
+
+            <div class="video-overlay"></div>
+
+            <!-- Connection Status -->
+            <div class="video-status-label" id="videoStatusBadge">
+              <span class="status-pulse-dot"></span>
+              <span id="videoStatusText">接通中</span>
+            </div>
+
+            <!-- Timer -->
+            <div class="video-timer" id="videoDurationTimer">00:00</div>
+          </div>
+
+          <!-- Dialogue Chat Area -->
+          <div class="interview-chat-area">
+            <!-- Dialog bubbles container -->
+            <div style="display: flex; flex-direction: column; gap: 14px; min-height: 160px; overflow-y: auto;"
+              id="interviewDialogueBox">
+              <!-- Initial Greeting / status bubble -->
+              <div class="chat-bubble ai" id="systemInitGreeting">
+                正在初始化语音引擎，请检查麦克风，面试官即将接通您的音视频通话。
+              </div>
+            </div>
+
+            <!-- Visual voice waves representing speaking/listening levels -->
+            <div class="voice-waves-row" id="voiceWavesElement">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+
+            <!-- Button to submit current answer -->
+            <div class="action-row-buttons">
+              <button class="btn-primary" id="submitUserAnswerBtn" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                我回答好了
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 5. GENERATING REPORT VIEW ================= -->
+      <div id="view-generating" class="generating-overlay-view">
+        <!-- Interactive loading graphics -->
+        <div class="generating-loader-graphic">
+          <div class="outer-ring"></div>
+          <div class="inner-ring"></div>
+          <span class="brain-icon">🤖</span>
+        </div>
+
+        <h2>面试报告正在生成中</h2>
+        <p>AI 正在根据您的答题深度、逻辑思路、语言组织及情绪临场表现进行综合研判，这可能需要几十秒时间...</p>
+
+        <div class="generating-progress-bar-bg">
+          <div class="generating-progress-bar-fill" id="reportProgressFill"></div>
+        </div>
+
+        <div class="generating-progress-percentage" id="reportProgressPct">0%</div>
+
+        <!-- Changing subtask titles -->
+        <div class="generating-step-text" id="reportStepText">
+          🔍 正在拉取本轮面试答题文本...
+        </div>
+      </div>
+
+      <!-- ================= 6. INTERVIEW REPORT DETAILS VIEW ================= -->
+      <div id="view-report" class="view">
+        <!-- Report Header -->
+        <div class="app-header">
+          <div class="back-btn" id="reportBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </div>
+          <span class="title">面试报告详情</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="report-view-container">
+          <!-- Dual sticky tabs -->
+          <div class="report-tabs-bar">
+            <div class="report-tab-item active" data-tab="analysis">分析报告</div>
+            <div class="report-tab-item" data-tab="questions">题目解析</div>
+          </div>
+
+          <!-- Tabs Content -->
+          <div class="report-tabs-content">
+
+            <!-- PANEL 1: ANALYSIS REPORT -->
+            <div class="report-panel active" id="panel-analysis">
+              <!-- Score big card -->
+              <div class="score-summary-card">
+                <div class="score-circle-container">
+                  <svg class="circle-svg" width="90" height="90">
+                    <circle class="bg-circle" cx="45" cy="45" r="40"></circle>
+                    <circle class="fill-circle" cx="45" cy="45" r="40"></circle>
+                  </svg>
+                  <div class="score-text-inner">
+                    <span class="score-big-num">90</span>
+                    <span class="score-unit">分</span>
+                  </div>
+                </div>
+
+                <div class="score-meta-block">
+                  <div class="badge-row">
+                    <span class="rating-tag">优秀</span>
+                    <span class="duration" id="reportDurationText">面试时长：2分钟</span>
+                  </div>
+                  <div class="compete-text">已超越 75% 的同岗位竞争者</div>
+                </div>
+              </div>
+
+              <!-- Detailed dimension ratings -->
+              <div class="section-title-row" style="margin-top: 0;">
+                <h3>详细分析报告</h3>
+              </div>
+
+              <div class="detailed-eval-grid">
+                <!-- Evaluation 1 -->
+                <div class="eval-card">
+                  <div class="eval-title-row">专业深度</div>
+                  <p class="eval-desc-text">在核心Java及Spring框架技术领域展现了扎实的基础。面对关于“Spring
+                    IoC核心原理”以及底层依赖注入机制的提问时，能够清晰准确地阐述核心容器管理、依赖查找以及控制反转的核心价值，理论掌握非常透彻。</p>
+                </div>
+                <!-- Evaluation 2 -->
+                <div class="eval-card">
+                  <div class="eval-title-row">逻辑清晰</div>
+                  <p class="eval-desc-text">
+                    回答过程逻辑清晰，条例分明。介绍过往Java课程项目合作时，能熟练运用“结构化拆解法”表述：从角色分工、SSM接口联调、到接口文档每日对齐、最终零Bug按时上线的全流程，信息闭环做得极佳。</p>
+                </div>
+                <!-- Evaluation 3 -->
+                <div class="eval-card">
+                  <div class="eval-title-row">应变能力</div>
+                  <p class="eval-desc-text">
+                    在遇到面试官临时追问细节以及对项目质量提出挑战时，能够保持沉稳冷静。应对有方，通过实事求是的态度配合自身充实的开发细节案例进行正面回应，展现了优秀的问题化解与抗压素质。</p>
+                </div>
+                <!-- Evaluation 4 -->
+                <div class="eval-card">
+                  <div class="eval-title-row">临场表现</div>
+                  <p class="eval-desc-text">
+                    语言流畅，表述清晰，无冗长多余的语气助词（如：“啊”、“嗯”、“这个”等）。语速语调稳定，情绪饱满而自信，时间把控能力极强，整体表现极其符合企业核心Java岗位的团队合作与技术沟通需求。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- PANEL 2: QUESTIONS ANALYSIS -->
+            <div class="report-panel" id="panel-questions">
+              <div class="question-analysis-list">
+                <!-- Question Card 1 -->
+                <div class="question-card">
+                  <div class="question-badge">第 1 题</div>
+                  <p class="question-text">作为应届生肯定有过课程相关的小组开发经历，能不能和我说话你在某次Java相关的小组作业中，是怎么和队友配合完成模块开发的？</p>
+
+                  <div class="section-divider"></div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">💡 问题解析</div>
+                    <p class="sub-content">属于行为面试问题，旨在考察候选人的团队协作能力、真实Java开发实践经验。重点关注职责划分、沟通流程、危机处理及项目质量保障。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🎯 回答策略</div>
+                    <p class="sub-content">建议先明确自身角色（如后端负责人），说明与队友的接口约定与联调流程，如何分摊任务及快速补位，最后用具体的数据或成果来例证开发效果。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🌟 优秀回答示例</div>
+                    <p class="sub-content example-content">
+                      “我在Java课程小组作业中担任后端负责人。我和前端约定每日定时对齐接口文档，并对关键字段设计规范，模块代码使用Git版本控制，最终按时完成任务，零Bug上线，小组作业获92分。”</p>
+                  </div>
+                </div>
+
+                <!-- Question Card 2 -->
+                <div class="question-card">
+                  <div class="question-badge">第 2 题</div>
+                  <p class="question-text">具体说一下你在小组作业中的角色和负责的模块。</p>
+
+                  <div class="section-divider"></div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">💡 问题解析</div>
+                    <p class="sub-content">属于深度追问类问题，旨在过滤简历水分。考察候选人对自己编写代码模块的参与深度、功能全貌和技术选型的底层认知。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🎯 回答策略</div>
+                    <p class="sub-content">建议精准切入所负责的业务（如订单或支付模块），并罗列使用的核心技术栈（如Spring Boot +
+                      Redis），说明模块的技术难点和自己是如何亲手解决的。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🌟 优秀回答示例</div>
+                    <p class="sub-content example-content">“我在Java电商系统小组作业中负责订单核心模块，用Spring
+                      Boot实现订单生成、状态机变更、以及微信支付接口对接，同时用Redis缓存商品热点库存，大幅提升高并发抢购下的响应速度。”</p>
+                  </div>
+                </div>
+
+                <!-- Question Card 3 -->
+                <div class="question-card">
+                  <div class="question-badge">第 3 题</div>
+                  <p class="question-text">
+                    刚刚你提到了小组作业，那在你们使用Java开发的过程中，肯定会涉及到一些框架的应用。我们知道Spring框架是Java后端开发的绝对核心，你能不能给我讲讲Spring
+                    IoC的核心原理，以及它在实际开发中能帮我们解决什么问题？</p>
+
+                  <div class="section-divider"></div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">💡 问题解析</div>
+                    <p class="sub-content">属于底层技术核心问题。考察候选人对Spring核心理念（控制反转）的掌握广度，检验其是对底层源码和设计模式有所理解，还是仅会调包使用。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🎯 回答策略</div>
+                    <p class="sub-content">
+                      要清晰解释‘控制反转（IoC）’是把对象的生命周期与依赖关系托管给Spring容器。再结合实际项目阐明由于IoC的使用，极大地降低了组件之间的强耦合，实现松耦合，便于测试与系统扩展。</p>
+                  </div>
+
+                  <div class="question-sub-section">
+                    <div class="sub-title">🌟 优秀回答示例</div>
+                    <p class="sub-content example-content">“Spring IoC核心是控制反转，将原本手动new对象的控制权交给Spring
+                      Container管理，底层依靠反射加工厂模式实现依赖注入（DI）。这帮我们彻底解耦了Service和Dao层，降低开发维护成本，提升团队并行开发效率。”</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Actions Panel -->
+          <div class="report-bottom-bar">
+            <button class="btn-primary" id="reportFinishBackHomeBtn">回到首页</button>
+            <p class="bottom-caption">以上面试评价与解析由 AI 面试报告自动生成</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 9. RESUME MANAGER VIEW ================= -->
+      <div id="view-resume-mgr" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="resumeMgrBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">简历管理</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="resume-mgr-container">
+          <div class="section-title-row" style="margin-top: 0;">
+            <h3>已上传简历</h3>
+          </div>
+
+          <div id="resumeListContainer">
+            <div class="resume-card-item" id="defaultResumeCardItem">
+              <div class="file-details">
+                <div class="file-icon-box">📄</div>
+                <div class="name-size">
+                  <span class="file-name" id="mgrResumeFileName">张三_Java后端开发个人简历.pdf</span>
+                  <span class="file-size">1.2 MB · 2026/05/28 上传</span>
+                </div>
+              </div>
+              <button class="delete-btn" id="deleteResumeBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="uploadNewResumeMgrBtn" style="margin-top: 10px;">
+            ➕ 上传新简历 (PDF/Word)
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 10. POINTS MALL VIEW ================= -->
+      <div id="view-points-mall" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="pointsMallBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">充值中心</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="mall-container">
+          <div class="points-mall-banner">
+            <div class="balance-block">
+              <div class="balance-title">当前积分余额</div>
+              <div class="balance-num" id="mallPointsDisplay">20 积分</div>
+            </div>
+            <span class="gold-coin">🪙</span>
+          </div>
+
+          <div class="section-title-row" style="margin-top:0; margin-bottom:16px;">
+            <h3>充值积分套餐</h3>
+          </div>
+
+          <div class="packages-grid">
+            <div class="package-card" data-amt="10" data-price="9.9">
+              <div class="amount">10 积分</div>
+              <span class="bonus">赠 2 积分</span>
+              <div class="price">￥ 9.9</div>
+            </div>
+            <div class="package-card active" data-amt="30" data-price="29.9">
+              <div class="amount">30 积分</div>
+              <span class="bonus">赠 8 积分</span>
+              <div class="price">￥ 29.9</div>
+            </div>
+            <div class="package-card" data-amt="50" data-price="49.9">
+              <div class="amount">50 积分</div>
+              <span class="bonus">赠 15 积分</span>
+              <div class="price">￥ 49.9</div>
+            </div>
+            <div class="package-card" data-amt="100" data-price="99.9">
+              <div class="amount">100 积分</div>
+              <span class="bonus">赠 35 积分</span>
+              <div class="price">￥ 99.9</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="buyPointsActionBtn">
+            立即支付 (微信支付)
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 11. SETTINGS CENTER VIEW ================= -->
+      <div id="view-settings" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="settingsBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">设置中心</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="settings-container">
+          <div class="settings-section-card">
+            <div class="settings-row" id="settingsMicCheckRow">
+              <div class="label-block">
+                <span class="title">麦克风检测</span>
+                <span class="desc">检测麦克风收音与灵敏度</span>
+              </div>
+              <span style="font-size:12px; color:var(--primary-color); font-weight:700; cursor:pointer;">🎤 点击测试</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="label-block">
+                <span class="title">自动录音模式</span>
+                <span class="desc">面试官停顿后自动开启录音转写</span>
+              </div>
+              <div class="toggle-switch-sim checked" id="toggleAutoRecord"></div>
+            </div>
+
+            <div class="settings-row">
+              <div class="label-block">
+                <span class="title">实时识别语种</span>
+                <span class="desc">实时语音转文字所匹配的默认语种</span>
+              </div>
+              <span style="font-size:12px; font-weight:700; color:var(--dark-color);">中文 (普通话)</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="label-block">
+                <span class="title">播报音量调节</span>
+                <span class="desc">AI 语音提问的声音音量大小</span>
+              </div>
+              <input type="range" class="volume-slider-sim" value="80" min="0" max="100">
+            </div>
+          </div>
+
+          <div class="settings-section-card">
+            <div class="settings-row" id="settingsClearCacheRow">
+              <div class="label-block">
+                <span class="title">清理本地缓存</span>
+                <span class="desc">释放图片、对话转写录音占用的内存</span>
+              </div>
+              <span style="font-size:12px; color:var(--gray-dark); font-weight:700;" id="cacheDisplayVal">12.4 MB</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="label-block">
+                <span class="title">关于面了个试</span>
+                <span class="desc">AI 智能模拟面试引擎系统</span>
+              </div>
+              <span style="font-size:12px; color:var(--gray-dark); font-weight:600;">v3.1.2-build2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 12. AI RESUME OPTIMIZER VIEW ================= -->
+      <div id="view-resume-opt" class="view">
+        <div class="app-header">
+          <div class="back-btn" id="resumeOptBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </div>
+          <span class="title">AI 简历一键优化</span>
+          <div class="wechat-capsule">
+            <div class="dot-menu">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="close-circle"></div>
+          </div>
+        </div>
+
+        <div class="resume-opt-container">
+          <div class="upload-widget-area" id="optResumeUploadArea">
+            <div class="upload-placeholder" id="optUploadPlaceholder">
+              📑 点击选择要优化的简历 (PDF/Word)
+            </div>
+            <div class="upload-progress-container" id="optUploadProgress">
+              <div class="file-info">
+                <span class="filename" id="optUploadFileName">我的个人简历_Java开发.pdf</span>
+                <span class="pct" id="optUploadPct">0%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="optUploadProgressFill"></div>
+              </div>
+              <span class="status-text" id="optUploadStatus">正在上传进行简历深度体检...</span>
+            </div>
+          </div>
+
+          <div class="split-diff-wrapper" id="optSplitDiffViewer" style="display: none;">
+            <div class="section-title-row" style="margin-top:0; margin-bottom:8px;">
+              <h3>AI 黄金 STAR 润色对比</h3>
+            </div>
+
+            <div class="diff-column-card original">
+              <div class="badge-title">修改前 (Original)</div>
+              <div class="code-block-content">
+                “负责开发了电商系统的订单和支付模块，写了一些接口，配合前端进行了接口联调，最后上线了。”
+              </div>
+            </div>
+
+            <div class="diff-column-card optimized">
+              <div class="badge-title">✨ STAR 法则优化后 (After)</div>
+              <div class="code-block-content">
+                “<span class="star-tag">【情境/任务】</span>针对高并发电商场景，作为核心后端，主导订单与微信支付模块重构；<br>
+                <span class="star-tag">【行动】</span>基于 Spring Boot 架构，设计防重幂等机制与状态机业务异步驱动流转，解决分布式接口并发冲突；<br>
+                <span class="star-tag">【结果】</span>实现本地压测响应低于 150ms，且按时零 Bug 上线交付，项目作业获 92 分评级。”
+              </div>
+            </div>
+
+            <button class="btn-primary" id="saveOptimizedResumeBtn" style="margin-top:16px;">
+              💾 保存并应用此智能优化
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom navigation tabs bar (shown on Home & Mine views) -->
+    <div class="bottom-nav" id="appBottomNav">
+      <div class="nav-item active" data-view="home">
+        <!-- Home SVG -->
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="9 22 9 12 15 12 15 22" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>模拟面试</span>
+      </div>
+      <div class="nav-item" data-view="mine">
+        <!-- User SVG -->
+        <svg viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>我的</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

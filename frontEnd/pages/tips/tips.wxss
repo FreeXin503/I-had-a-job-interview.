@@ -1,0 +1,77 @@
+/* pages/tips/tips.wxss */
+.tips-container {
+  padding: 32rpx 40rpx;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tips-card {
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 20rpx 50rpx rgba(0, 0, 0, 0.05);
+}
+
+.tip-item {
+  margin-bottom: 40rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.tip-title::before {
+  content: '💡';
+  font-size: 32rpx;
+}
+
+.tip-content {
+  font-size: 26rpx;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.progress-container {
+  padding: 40rpx 0;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.progress-pct {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.progress-bar-bg {
+  height: 16rpx;
+  background-color: #e2e8f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}

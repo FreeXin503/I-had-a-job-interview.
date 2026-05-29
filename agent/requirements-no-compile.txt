@@ -1,0 +1,29 @@
+# AI Agent 依赖包 - 无需编译版本
+# 适用于无法编译pydantic-core的环境
+
+# Web框架（使用预编译版本）
+fastapi
+uvicorn[standard]
+python-multipart
+
+# OpenAI SDK (用于DeepSeek)
+openai
+
+# 数据处理（使用预编译wheel）
+pydantic
+python-dotenv
+
+# PDF解析
+PyPDF2
+
+# Word文档解析
+python-docx
+
+# HTTP客户端
+httpx
+requests
+
+# 工具库
+tenacity
+
+# 注意：不指定版本号，让pip自动选择兼容的预编译版本

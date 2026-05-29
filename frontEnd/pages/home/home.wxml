@@ -1,0 +1,63 @@
+<!--pages/home/home.wxml-->
+<view class="home-container">
+  <!-- 顶部标题区 -->
+  <view class="home-header">
+    <view class="badge-engine">
+      <view class="dot"></view>
+      <text>AI 驱动引擎 3.0</text>
+    </view>
+    <view class="home-title">AI 模拟面试</view>
+    <view class="home-subtitle">全真还原面试场景，实时语音互动
+智能评分助力高效拿Offer</view>
+  </view>
+
+  <!-- 面试官预览卡片 -->
+  <view class="interviewer-preview-card">
+    <view class="interviewer-placeholder">
+      <text class="avatar-large">👨‍💼</text>
+      <text class="ai-label">AI面试官</text>
+    </view>
+    <view class="live-tag">
+      <view class="online-dot"></view>
+      <text>ONLINE</text>
+    </view>
+    <view class="mic-indicator">
+      <text class="mic-emoji">🎤</text>
+    </view>
+  </view>
+
+  <!-- 主要操作按钮 -->
+  <view class="home-main-cta-box">
+    <button class="home-primary-cta-btn" bindtap="startMockInterview">
+      🎤 立即开启 AI 模拟面试
+    </button>
+    <button class="home-secondary-link-btn" bindtap="startResumeOpt">
+      ✨ AI 简历一键优化
+    </button>
+  </view>
+
+  <!-- 最近记录 -->
+  <view class="section-title-row">
+    <text class="section-title">最近记录</text>
+    <view class="link-all" bindtap="viewAllRecords">
+      <text>查看全部</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="recent-records-list">
+    <view class="recent-record-card" wx:for="{{recentRecords}}" wx:key="id" bindtap="viewReport" data-id="{{item.id}}">
+      <view class="left-info">
+        <text class="job-title">{{item.jobTitle}}</text>
+        <text class="details">{{item.experience}} · {{item.style}} · {{item.date}}</text>
+      </view>
+      <view class="score-badge">{{item.score}} 分</view>
+    </view>
+
+    <view class="empty-state" wx:if="{{recentRecords.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无面试记录
+开始你的第一次AI模拟面试吧</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,204 @@
+/* pages/interview/interview.wxss */
+.interview-container {
+  min-height: 100vh;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.interview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 40rpx;
+}
+
+.ai-tag {
+  font-size: 22rpx;
+  opacity: 0.6;
+}
+
+.hangup-btn {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 12rpx 28rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  border: 2rpx solid rgba(239, 68, 68, 0.3);
+}
+
+.video-pane {
+  position: relative;
+  margin: 0 40rpx;
+  border-radius: 56rpx;
+  overflow: hidden;
+  height: 760rpx;
+  box-shadow: 0 30rpx 60rpx rgba(0, 0, 0, 0.5);
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.avatar-emoji {
+  font-size: 160rpx;
+  margin-bottom: 24rpx;
+}
+
+.interviewer-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.video-status-badge {
+  position: absolute;
+  top: 32rpx;
+  left: 32rpx;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 24rpx;
+  padding: 12rpx 24rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background-color: #10b981;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.video-timer {
+  position: absolute;
+  bottom: 32rpx;
+  right: 32rpx;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 16rpx;
+  padding: 8rpx 16rpx;
+  font-size: 22rpx;
+  font-family: monospace;
+}
+
+.chat-area {
+  flex: 1;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.dialogue-box {
+  flex: 1;
+  max-height: 320rpx;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  border-radius: 40rpx;
+  padding: 28rpx 32rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  margin-bottom: 28rpx;
+}
+
+.chat-bubble.ai {
+  background-color: #1f2937;
+  color: #ffffff;
+  border-bottom-left-radius: 8rpx;
+  margin-right: auto;
+}
+
+.chat-bubble.user {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-bottom-right-radius: 8rpx;
+  margin-left: auto;
+}
+
+.voice-waves {
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.wave-bar {
+  width: 6rpx;
+  height: 8rpx;
+  background-color: #2563eb;
+  border-radius: 4rpx;
+  transition: height 0.1s ease;
+}
+
+.voice-waves.active .wave-bar {
+  background-color: #60a5fa;
+  animation: wave-bounce 1s ease-in-out infinite alternate;
+}
+
+.voice-waves.active .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+.voice-waves.active .wave-bar:nth-child(2) { animation-delay: 0.3s; }
+.voice-waves.active .wave-bar:nth-child(3) { animation-delay: 0.5s; }
+.voice-waves.active .wave-bar:nth-child(4) { animation-delay: 0.2s; }
+.voice-waves.active .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+.voice-waves.active .wave-bar:nth-child(6) { animation-delay: 0.6s; }
+.voice-waves.active .wave-bar:nth-child(7) { animation-delay: 0.1s; }
+.voice-waves.active .wave-bar:nth-child(8) { animation-delay: 0.3s; }
+
+@keyframes wave-bounce {
+  from { height: 8rpx; }
+  to { height: 64rpx; }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.record-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  padding: 32rpx 64rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: 64rpx;
+  box-shadow: 0 8rpx 30rpx rgba(37, 99, 235, 0.3);
+}
+
+.record-btn.recording {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: pulse-scale 1s infinite;
+}
+
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}

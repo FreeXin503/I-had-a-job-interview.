@@ -1,0 +1,88 @@
+<!--pages/prep/prep.wxml-->
+<view class="prep-container">
+  <!-- 当前情况 -->
+  <view class="prep-section">
+    <view class="prep-section-title">当前情况</view>
+    <view class="options-grid">
+      <view class="option-pill {{experience === 'intern' ? 'active' : ''}}" bindtap="selectExperience" data-value="intern">实习</view>
+      <view class="option-pill {{experience === 'graduate' ? 'active' : ''}}" bindtap="selectExperience" data-value="graduate">应届</view>
+      <view class="option-pill {{experience === 'junior' ? 'active' : ''}}" bindtap="selectExperience" data-value="junior">1-3年</view>
+      <view class="option-pill {{experience === 'senior' ? 'active' : ''}}" bindtap="selectExperience" data-value="senior">3年以上</view>
+    </view>
+  </view>
+
+  <!-- 面试官风格 -->
+  <view class="prep-section">
+    <view class="prep-section-title">面试官风格</view>
+    <view class="style-grid">
+      <view class="style-card {{style === 'random' ? 'active' : ''}}" bindtap="selectStyle" data-value="random">
+        <text class="icon">🎲</text>
+        <text class="label">随机</text>
+      </view>
+      <view class="style-card {{style === 'gentle' ? 'active' : ''}}" bindtap="selectStyle" data-value="gentle">
+        <text class="icon">😊</text>
+        <text class="label">温和</text>
+      </view>
+      <view class="style-card {{style === 'standard' ? 'active' : ''}}" bindtap="selectStyle" data-value="standard">
+        <text class="icon">😐</text>
+        <text class="label">标准</text>
+      </view>
+      <view class="style-card {{style === 'stress' ? 'active' : ''}}" bindtap="selectStyle" data-value="stress">
+        <text class="icon">🔥</text>
+        <text class="label">压力</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 面试岗位 -->
+  <view class="prep-section">
+    <view class="prep-section-title">面试岗位</view>
+    <view class="select-trigger" bindtap="showJobSelector">
+      <text>{{selectedJob}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 个人简历 -->
+  <view class="prep-section">
+    <view class="prep-section-title">个人简历</view>
+    <view class="resume-options">
+      <view class="resume-option-card {{resumeMode === 'no-resume' ? 'active' : ''}}" bindtap="selectResumeMode" data-value="no-resume">
+        <view class="option-icon">🚫</view>
+        <view class="info-block">
+          <view class="title">不使用简历</view>
+          <view class="desc">通用面试题库，不针对个人经历</view>
+        </view>
+        <view class="radio-dot"></view>
+      </view>
+
+      <view class="resume-option-card {{resumeMode === 'use-resume' ? 'active' : ''}}" bindtap="selectResumeMode" data-value="use-resume">
+        <view class="option-icon">📄</view>
+        <view class="info-block">
+          <view class="title">上传简历面试</view>
+          <view class="desc">推荐：针对性提问，效果更好</view>
+        </view>
+        <view class="radio-dot"></view>
+      </view>
+    </view>
+
+    <!-- 上传简历区域 -->
+    <view class="upload-widget-area" wx:if="{{resumeMode === 'use-resume'}}">
+      <view class="upload-placeholder" wx:if="{{!resumeUploaded}}" bindtap="chooseResume">
+        📁 点击上传简历 (PDF / Word)
+      </view>
+      <view class="upload-success" wx:if="{{resumeUploaded}}">
+        <text class="success-icon">✅</text>
+        <text class="success-text">{{resumeFileName}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-action-banner">
+    <button class="btn-primary" bindtap="enterInterview">
+      <text>进入面试 →</text>
+    </button>
+    <view class="points-tip">剩余{{pointsBalance}}积分，可进行{{availableMinutes}}分钟的模拟面试</view>
+  </view>
+</view>

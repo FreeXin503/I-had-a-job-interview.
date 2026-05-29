@@ -1,0 +1,43 @@
+<!--pages/tips/tips.wxml-->
+<view class="tips-container">
+  <view class="tips-card">
+    <view class="tip-item">
+      <view class="tip-title">环境准备</view>
+      <view class="tip-content">
+        请在安静的环境进行面试，以获得更准确的语音识别。开始前请关闭静音模式，并将手机音量调大，点击按钮后请同意麦克风授权。
+      </view>
+    </view>
+
+    <view class="tip-item">
+      <view class="tip-title">准备自我介绍</view>
+      <view class="tip-content">
+        简短介绍教育背景、核心技能与求职意向，告诉面试官你为什么胜任这个岗位。
+      </view>
+    </view>
+
+    <view class="tip-item">
+      <view class="tip-title">经验和成就</view>
+      <view class="tip-content">
+        谈论自己的经验和成就时，要自信且积极。
+      </view>
+    </view>
+
+    <view class="tip-item">
+      <view class="tip-title">职位</view>
+      <view class="tip-content">
+        提前了解公司与岗位要求，在回答中体现对职位的真实兴趣与热情，适当提问展现你的关注。
+      </view>
+    </view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-container">
+    <view class="progress-label">
+      <text class="progress-pct">{{progress}}%</text>
+      <text>题库准备中</text>
+    </view>
+    <view class="progress-bar-bg">
+      <view class="progress-bar-fill" style="width: {{progress}}%"></view>
+    </view>
+  </view>
+</view>
