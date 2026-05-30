@@ -71,45 +71,45 @@ export class TtsService implements OnModuleInit {
       let prosodyOptions: any = {};
 
       if (gender === 'male') {
-        // 男生选项
+        // 男生选项：调校为饱满、沉稳且具有极强呼吸感的声线
         switch (style) {
-          case 'gentle': // 温和男声 (云希，降速微升调)
+          case 'gentle': // 温和男声 (云希：降速微升调，带来极强的耐心与亲和力，像一位循循善诱的导师)
             voiceName = 'zh-CN-YunxiNeural';
-            prosodyOptions = { rate: '-5%', pitch: '+3Hz' };
+            prosodyOptions = { rate: '-8%', pitch: '+1Hz' };
             break;
-          case 'stress': // 压力男声 (云健，升速降调，严肃感)
-            voiceName = 'zh-CN-YunjianNeural';
-            prosodyOptions = { rate: '+10%', pitch: '-5Hz' };
+          case 'stress': // 压力男声 (云阳：选用最权威深沉的专业音色，微加速降调，严肃且富有穿透力)
+            voiceName = 'zh-CN-YunyangNeural';
+            prosodyOptions = { rate: '+3%', pitch: '-3Hz' };
             break;
           case 'random': // 随机
             const maleStyles = ['standard', 'gentle', 'stress'];
             const chosenMaleStyle = maleStyles[Math.floor(Math.random() * maleStyles.length)];
             return this.generateSpeech(text, questionId, gender, chosenMaleStyle);
-          case 'standard': // 标准男声 (云希，常规语速)
+          case 'standard': // 标准男声 (云希：略微降速以增加停顿自然感，标准商务面试官)
           default:
             voiceName = 'zh-CN-YunxiNeural';
-            prosodyOptions = { rate: '+0%', pitch: '+0Hz' };
+            prosodyOptions = { rate: '-3%', pitch: '+0Hz' };
             break;
         }
       } else {
-        // 女生选项
+        // 女生选项：调校为极具情感波动、温婉生动的职场HR声线
         switch (style) {
-          case 'gentle': // 温和女声 (晓晓，降速升调，亲和力)
+          case 'gentle': // 温和女声 (晓晓：降速微升调，轻柔且充满鼓励性，缓解求职者紧张感)
             voiceName = 'zh-CN-XiaoxiaoNeural';
-            prosodyOptions = { rate: '-5%', pitch: '+5Hz' };
+            prosodyOptions = { rate: '-8%', pitch: '+2Hz' };
             break;
-          case 'stress': // 压力女声 (晓辰，沉稳快速)
+          case 'stress': // 压力女声 (晓辰：略微提速降调，理性冷静，带给求职者更逼真的压力面试场感)
             voiceName = 'zh-CN-XiaochenNeural';
-            prosodyOptions = { rate: '+8%', pitch: '-5Hz' };
+            prosodyOptions = { rate: '+3%', pitch: '-2Hz' };
             break;
           case 'random': // 随机
             const femaleStyles = ['standard', 'gentle', 'stress'];
             const chosenFemaleStyle = femaleStyles[Math.floor(Math.random() * femaleStyles.length)];
             return this.generateSpeech(text, questionId, gender, chosenFemaleStyle);
-          case 'standard': // 标准女声 (晓晓，常规语速)
+          case 'standard': // 标准女声 (晓晓：沉稳大方，常规语速，极具职场干练感)
           default:
             voiceName = 'zh-CN-XiaoxiaoNeural';
-            prosodyOptions = { rate: '+0%', pitch: '+0Hz' };
+            prosodyOptions = { rate: '-3%', pitch: '+1Hz' };
             break;
         }
       }
