@@ -521,6 +521,8 @@ Page({
           if (!recognizedText || 
               recognizedText === '无法识别或用户没有说话' || 
               recognizedText === '语音解析失败，请确保录音格式为 WAV 格式') {
+            this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
+            this.isRecordingStarted = false;
             wx.showToast({ title: '未听清声音，请重新按住说话', icon: 'none', duration: 2500 });
             return;
           }
