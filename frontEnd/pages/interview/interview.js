@@ -1,6 +1,7 @@
 // pages/interview/interview.js
 const app = getApp();
 const recorderManager = wx.getRecorderManager();
+const plugin = requirePlugin('WechatSI');
 
 // 面试官问题库（按轮次循环）
 const AI_QUESTIONS = [
@@ -107,33 +108,39 @@ Page({
   playTTS(text) {
     // 先停掉上一次的音频
     if (this.audioContext) {
-      this.audioContext.stop();
-      this.audioContext.destroy();
+      try {
+        this.audioContext.stop();
+        this.audioContext.destroy();
+      } catch (e) {
+        console.error('销毁音频失败:', e);
+      }
       this.audioContext = null;
     }
 
     this.setData({ isAISpeaking: true });
     this.startSpeakingAnimation();
 
-    // 调用后端 TTS 接口
-    const gender = this.data.voiceGender || 'female';
-    const style = (wx.getStorageSync('interviewConfig') || {}).style || 'standard';
+    // 去除星号等干扰符号，确保合成文本最干净
+    const cleanText = text.replace(/\*/g, '');
 
-    wx.request({
-      url: `${app.globalData.apiBaseUrl}/interview/tts`,
-      method: 'POST',
-      data: { text, gender, style },
+    // 使用微信官方原生“同声传译”插件，完全运行在手机本地，彻底免疫一切网络、证书与局域网拦截！
+    console.log('正在调用微信原生同声传译 TTS 合成:', cleanText);
+    plugin.textToSpeech({
+      lang: "zh_CN",
+      tts: true,
+      content: cleanText,
       success: (res) => {
-        if (res.statusCode === 200 && res.data && res.data.audioUrl) {
-          this._playAudioUrl(res.data.audioUrl);
+        if (res.filename) {
+          console.log("微信同声传译合成成功，本地文件路径:", res.filename);
+          this._playAudioUrl(res.filename);
         } else {
-          // TTS 接口不可用，只做动画，2秒后结束
-          this._simulateSpeaking(text.length * 80);
+          console.warn("微信同声传译合成成功但未返回文件名，切换为模拟动画");
+          this._simulateSpeaking(cleanText.length * 80);
         }
       },
-      fail: () => {
-        // 网络不通，只做动画
-        this._simulateSpeaking(text.length * 80);
+      fail: (err) => {
+        console.error("微信同声传译合成失败，切换为模拟动画:", err);
+        this._simulateSpeaking(cleanText.length * 80);
       }
     });
   },
@@ -151,7 +158,7 @@ Page({
       this.audioContext = null;
     }
 
-    console.log('正在缓存并播放面试官语音, 远程 URL:', url);
+    console.log('开始播放面试官语音:', url);
     
     // 设置全局音频选项（防静音、强行使用扬声器）
     if (wx.setInnerAudioOption) {
@@ -163,13 +170,44 @@ Page({
       });
     }
 
-    // 针对安卓和苹果双重优化：先下载到手机本地，再进行播放，彻底解决流式解码不兼容导致的静音问题
+    // 判断是否已经是本地临时文件 (如微信同声传译生成的 wxfile:// 或 http://tmp/)
+    const isLocal = url.startsWith('wxfile://') || url.startsWith('http://tmp/') || !url.startsWith('http');
+    if (isLocal) {
+      console.log('检测到本地物理路径，跳过下载，直接调动声卡播放:', url);
+      const ctx = wx.createInnerAudioContext();
+      ctx.src = url;
+      ctx.autoplay = true;
+      ctx.obeyMuteSwitch = false; 
+      this.audioContext = ctx;
+
+      ctx.onPlay(() => {
+        console.log('面试官本地语音实际播放中...');
+      });
+
+      ctx.onEnded(() => {
+        console.log('面试官本地语音播放正常结束');
+        this.setData({ isAISpeaking: false });
+        this.stopSpeakingAnimation();
+      });
+
+      ctx.onError((err) => {
+        console.error('本地音频播放失败，详细错误:', err);
+        this.setData({ isAISpeaking: false });
+        this.stopSpeakingAnimation();
+        this._simulateSpeaking(3000);
+      });
+
+      ctx.play();
+      return;
+    }
+
+    // 针对远程音频流的下载与播放降级逻辑
     wx.downloadFile({
       url: url,
       success: (downloadRes) => {
         if (downloadRes.statusCode === 200) {
           const localPath = downloadRes.tempFilePath;
-          console.log('语音文件极速缓存成功，本地路径:', localPath);
+          console.log('远程语音文件缓存成功，本地路径:', localPath);
 
           const ctx = wx.createInnerAudioContext();
           ctx.src = localPath;
@@ -178,17 +216,17 @@ Page({
           this.audioContext = ctx;
 
           ctx.onPlay(() => {
-            console.log('面试官语音实际播放中...');
+            console.log('面试官缓存语音实际播放中...');
           });
 
           ctx.onEnded(() => {
-            console.log('面试官语音播放正常结束');
+            console.log('面试官缓存语音播放正常结束');
             this.setData({ isAISpeaking: false });
             this.stopSpeakingAnimation();
           });
 
           ctx.onError((err) => {
-            console.error('本地音频播放失败，详细错误:', err);
+            console.error('缓存音频播放失败，详细错误:', err);
             this.setData({ isAISpeaking: false });
             this.stopSpeakingAnimation();
             this._simulateSpeaking(3000);
@@ -201,7 +239,7 @@ Page({
         }
       },
       fail: (err) => {
-        console.warn('极速缓存失败，降级为直接在线播放...', err);
+        console.warn('缓存下载失败，降级为直接在线播放...', err);
         this._playOnlineAudioUrl(url);
       }
     });
