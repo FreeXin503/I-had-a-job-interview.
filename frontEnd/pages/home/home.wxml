@@ -13,10 +13,33 @@
 
   <!-- 面试官预览卡片 -->
   <view class="interviewer-preview-card">
-    <view class="interviewer-placeholder">
-      <text class="avatar-large">👨‍💼</text>
-      <text class="ai-label">AI面试官</text>
+    <!-- 女生面试官 -->
+    <image 
+      wx:if="{{activeInterviewer === 'female'}}"
+      class="interviewer-preview-image" 
+      src="/assets/avatars/female_closed.jpg" 
+      mode="aspectFill"
+    />
+    <!-- 男生面试官 -->
+    <image 
+      wx:else
+      class="interviewer-preview-image" 
+      src="/assets/avatars/male_closed.jpg" 
+      mode="aspectFill"
+    />
+
+    <!-- 阴影渐变遮罩 -->
+    <view class="interviewer-preview-overlay">
+      <text class="interviewer-name-title">{{activeInterviewer === 'female' ? femaleName : maleName}}</text>
+      <text class="ai-label">AI 面试官</text>
     </view>
+
+    <!-- 切换角色按钮 -->
+    <view class="home-switch-interviewer-btn" catchtap="switchInterviewer" hover-class="switch-btn-hover">
+      <text class="switch-icon">🔄</text>
+      <text class="switch-text">换面试官</text>
+    </view>
+
     <view class="live-tag">
       <view class="online-dot"></view>
       <text>ONLINE</text>

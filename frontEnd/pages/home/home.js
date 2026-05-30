@@ -3,7 +3,10 @@ const app = getApp();
 
 Page({
   data: {
-    recentRecords: []
+    recentRecords: [],
+    activeInterviewer: 'female',
+    femaleName: '王雅琪 (资深HR)',
+    maleName: '张睿达 (技术主考官)'
   },
 
   onLoad() {
@@ -12,6 +15,32 @@ Page({
 
   onShow() {
     this.loadRecentRecords();
+    this.syncInterviewer();
+  },
+
+  // 同步当前选中的面试官
+  syncInterviewer() {
+    const config = wx.getStorageSync('interviewConfig') || {};
+    const gender = config.voiceGender || 'female';
+    this.setData({
+      activeInterviewer: gender
+    });
+  },
+
+  // 切换面试官
+  switchInterviewer() {
+    const next = this.data.activeInterviewer === 'female' ? 'male' : 'female';
+    this.setData({ activeInterviewer: next });
+    
+    const config = wx.getStorageSync('interviewConfig') || {};
+    config.voiceGender = next;
+    wx.setStorageSync('interviewConfig', config);
+
+    wx.showToast({
+      title: '已切换为：' + (next === 'female' ? this.data.femaleName : this.data.maleName),
+      icon: 'none',
+      duration: 1500
+    });
   },
 
   // 加载最近记录

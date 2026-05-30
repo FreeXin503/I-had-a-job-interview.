@@ -17,9 +17,12 @@ Page({
 
   onLoad() {
     const pointsBalance = app.globalData.pointsBalance;
+    const config = wx.getStorageSync('interviewConfig') || {};
+    const gender = config.voiceGender || 'female';
     this.setData({
       pointsBalance: pointsBalance,
-      availableMinutes: Math.floor(pointsBalance / 10)
+      availableMinutes: Math.floor(pointsBalance / 10),
+      voiceGender: gender
     });
   },
 

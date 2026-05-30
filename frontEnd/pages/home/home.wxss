@@ -62,25 +62,70 @@
   margin-bottom: 48rpx;
 }
 
-.interviewer-placeholder {
+.interviewer-preview-image {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: block;
 }
 
-.avatar-large {
-  font-size: 200rpx;
-  margin-bottom: 24rpx;
+.interviewer-preview-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200rpx;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32rpx 40rpx;
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+.interviewer-name-title {
+  font-size: 38rpx;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 4rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.5);
 }
 
 .ai-label {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 2rpx;
+}
+
+.home-switch-interviewer-btn {
+  position: absolute;
+  top: 32rpx;
+  right: 32rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30rpx;
+  padding: 12rpx 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  z-index: 10;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.home-switch-interviewer-btn .switch-icon {
+  font-size: 24rpx;
+}
+
+.home-switch-interviewer-btn .switch-text {
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.switch-btn-hover {
+  transform: scale(0.95);
+  opacity: 0.9;
 }
 
 .live-tag {
