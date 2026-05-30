@@ -43,6 +43,16 @@ Page({
   audioContext: null,
 
   onLoad() {
+    // 双重保障：启动时强制配置微信音频环境，防止静音与非扬声器播放
+    if (wx.setInnerAudioOption) {
+      wx.setInnerAudioOption({
+        obeyMuteSwitch: false,
+        speakerOn: true,
+        success: () => console.log('面试房初始化设置音频参数成功：防静音、使用扬声器'),
+        fail: (e) => console.warn('面试房初始化设置音频参数失败:', e)
+      });
+    }
+
     const config = wx.getStorageSync('interviewConfig') || {};
     const gender = config.voiceGender || 'female';
     this.setData({
@@ -130,25 +140,55 @@ Page({
 
   // 播放音频 URL
   _playAudioUrl(url) {
+    // 销毁旧的播放实例，防止内存溢出和音频重叠
+    if (this.audioContext) {
+      try {
+        this.audioContext.stop();
+        this.audioContext.destroy();
+      } catch (e) {
+        console.error('销毁上一个音频失败:', e);
+      }
+      this.audioContext = null;
+    }
+
+    console.log('开始播放面试官语音, URL:', url);
+    
+    // 设置全局音频选项（防静音、强行使用扬声器）
+    if (wx.setInnerAudioOption) {
+      wx.setInnerAudioOption({
+        obeyMuteSwitch: false,
+        speakerOn: true,
+        success: () => console.log('播放时设置音频参数成功：防静音、使用扬声器'),
+        fail: (e) => console.warn('播放时设置音频参数失败:', e)
+      });
+    }
+
     const ctx = wx.createInnerAudioContext();
     ctx.src = url;
     ctx.autoplay = true;
+    ctx.obeyMuteSwitch = false; // 针对 iOS 双重保障
     this.audioContext = ctx;
 
     ctx.onPlay(() => {
-      console.log('面试官语音播放中...');
+      console.log('面试官语音实际播放中...');
     });
 
     ctx.onEnded(() => {
+      console.log('面试官语音播放正常结束');
       this.setData({ isAISpeaking: false });
       this.stopSpeakingAnimation();
     });
 
     ctx.onError((err) => {
-      console.error('音频播放失败', err);
+      console.error('音频实际播放失败，详细错误:', err);
+      // 容错：如果音频播放报错，自动切换为模拟说话动画，不影响核心面试进度
       this.setData({ isAISpeaking: false });
       this.stopSpeakingAnimation();
+      this._simulateSpeaking(3000);
     });
+
+    // 显式触发播放，确保在所有机型下均能发声
+    ctx.play();
   },
 
   // 无音频时模拟说话动画
