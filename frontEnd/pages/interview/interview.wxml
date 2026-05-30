@@ -10,20 +10,42 @@
   <view class="video-pane">
     <!-- 2D写实形象展示 -->
     <view class="interviewer-avatar-container">
-      <!-- 女生面试官 -->
-      <image 
-        wx:if="{{activeInterviewer === 'female'}}"
-        class="interviewer-image" 
-        src="{{speakFrame ? '/assets/avatars/female_open.jpg' : '/assets/avatars/female_closed.jpg'}}" 
-        mode="aspectFill"
-      />
-      <!-- 男生面试官 -->
-      <image 
-        wx:if="{{activeInterviewer === 'male'}}"
-        class="interviewer-image" 
-        src="{{speakFrame ? '/assets/avatars/male_open.jpg' : '/assets/avatars/male_closed.jpg'}}" 
-        mode="aspectFill"
-      />
+      <!-- 极美毛玻璃与环境氛围背景图底层 -->
+      <view class="frosted-glass-backdrop">
+        <view class="ambient-glow glow-1"></view>
+        <view class="ambient-glow glow-2"></view>
+      </view>
+
+      <!-- 女生面试官 (双层重叠 5 帧平滑渐变嘴型) -->
+      <view wx:if="{{activeInterviewer === 'female'}}" class="interviewer-image-wrapper">
+        <image 
+          class="interviewer-image base" 
+          src="/assets/avatars/female_closed.jpg" 
+          mode="aspectFill"
+        />
+        <image 
+          class="interviewer-image overlay" 
+          src="/assets/avatars/female_open.jpg" 
+          mode="aspectFill"
+          style="opacity: {{speakOpacity || 0.0}};"
+        />
+      </view>
+
+      <!-- 男生面试官 (双层重叠 5 帧平滑渐变嘴型) -->
+      <view wx:if="{{activeInterviewer === 'male'}}" class="interviewer-image-wrapper">
+        <image 
+          class="interviewer-image base" 
+          src="/assets/avatars/male_closed.jpg" 
+          mode="aspectFill"
+        />
+        <image 
+          class="interviewer-image overlay" 
+          src="/assets/avatars/male_open.jpg" 
+          mode="aspectFill"
+          style="opacity: {{speakOpacity || 0.0}};"
+        />
+      </view>
+
       <!-- 面试官姓名及浮层 -->
       <view class="interviewer-info-overlay">
         <text class="interviewer-name-text">{{activeInterviewer === 'female' ? femaleName : maleName}}</text>

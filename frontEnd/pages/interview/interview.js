@@ -323,35 +323,59 @@ Page({
       clearTimeout(this.speakInterval);
       this.speakInterval = null;
     }
-    this.setData({ speakFrame: true });
     
-    // 使用递归 setTimeout 实现极具人类呼吸感与语气顿挫的“拟真随机嘴型动画”
-    // 已将动作频率放缓，使其完美契合正常的中文说话语速（每秒 3~4 个音节），更显从容儒雅气质
+    this.setData({ speakOpacity: 0.0 });
+    
+    let currentState = 0; // 0 = 闭嘴, 4 = 完全张开 (共 5 个过渡档位)
+    let direction = 1;     // 1 = 渐渐张嘴, -1 = 渐渐闭嘴
+    let pauseFrames = 0;   // 模拟词组句读之间的自然换气停顿
+    
+    // 使用 5 阶高保真渐变序列 (0.0 -> 0.25 -> 0.50 -> 0.75 -> 1.0) 完美重现平滑嘴唇开合动作
     const runAnimation = () => {
       if (!this.data.isAISpeaking) {
-        this.setData({ speakFrame: false });
+        this.setData({ speakOpacity: 0.0 });
         return;
       }
       
-      const nextFrameState = !this.data.speakFrame;
-      this.setData({ speakFrame: nextFrameState });
-      
-      let nextDelay = 220;
-      
-      if (nextFrameState === false) {
-        // 闭嘴状态：模拟词与词之间的短暂换气、标点停顿，随机产生自然舒缓的停歇
-        const randomChance = Math.random();
-        if (randomChance < 0.18) {
-          nextDelay = 400 + Math.random() * 300; // 语气过渡/换气停顿 (400ms ~ 700ms)
-        } else {
-          nextDelay = 180 + Math.random() * 120; // 正常的闭口过渡时间 (180ms ~ 300ms)
+      // 当处于闭口状态（0）并且即将张开时，模拟标点换气与说话节奏中的极短停歇
+      if (currentState === 0 && direction === 1) {
+        if (pauseFrames === 0) {
+          // 20% 概率触发一次自然的字词停顿/换气 (停顿 250ms ~ 550ms)
+          if (Math.random() < 0.20) {
+            pauseFrames = Math.floor(2 + Math.random() * 3);
+          }
         }
-      } else {
-        // 张嘴状态：配合放缓的语速，将开口时间延长，模拟清晰的音节吐字与声调起伏
-        nextDelay = 200 + Math.random() * 180; // 吐字张口时间 (200ms ~ 380ms)
+        
+        if (pauseFrames > 0) {
+          pauseFrames--;
+          this.speakInterval = setTimeout(runAnimation, 120);
+          return;
+        }
       }
       
-      this.speakInterval = setTimeout(runAnimation, nextDelay);
+      // 推进至下一个嘴型档位
+      currentState += direction;
+      
+      // 边界检查并转向
+      if (currentState >= 4) {
+        currentState = 4;
+        direction = -1; // 达到最大张度，开始闭合
+      } else if (currentState <= 0) {
+        currentState = 0;
+        direction = 1;  // 完全闭合，开始新一轮张口
+      }
+      
+      // 映射到具体的 5 个平滑透明度档位，实现双层图片自然交叉混合
+      const opacityLevels = [0.0, 0.22, 0.48, 0.76, 1.0];
+      const nextOpacity = opacityLevels[currentState];
+      
+      this.setData({ speakOpacity: nextOpacity });
+      
+      // 精准放缓音节吞吐周期：每阶过渡时间设为 110ms ~ 145ms
+      // 这意味着一个完整的音节吐字（张口 + 闭口）需要约 800ms ~ 1100ms 的平滑起伏，极为优雅沉稳，完美匹配真人中等语速
+      const stepDelay = 110 + Math.random() * 35;
+      
+      this.speakInterval = setTimeout(runAnimation, stepDelay);
     };
     
     runAnimation();
@@ -362,7 +386,7 @@ Page({
       clearTimeout(this.speakInterval);
       this.speakInterval = null;
     }
-    this.setData({ speakFrame: false });
+    this.setData({ speakOpacity: 0.0 });
   },
 
   // ────────────────────────────────────────
