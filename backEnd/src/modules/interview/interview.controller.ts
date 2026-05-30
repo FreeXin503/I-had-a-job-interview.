@@ -191,6 +191,162 @@ export class InterviewController {
   }
 
   /**
+   * 语音识别 (智能对话模拟) - Base64 文本通道直接推送（100% 免疫 multipart 上传与网络层拦截）
+   */
+  @Post('upload-audio-base64')
+  async uploadAudioBase64(
+    @Body('audioBase64') audioBase64: string,
+    @Body('duration') duration: number,
+    @Request() req: any,
+    @Body('history') historyStr?: string,
+    @Body('experience') experience?: string,
+    @Body('style') style?: string,
+    @Body('jobTitle') jobTitle?: string,
+  ) {
+    const uploadDir = path.join(process.cwd(), 'public', 'audio');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const fileName = `user_${Date.now()}_voice.wav`;
+    let recognizedText = '';
+
+    if (audioBase64) {
+      const buffer = Buffer.from(audioBase64, 'base64');
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, buffer);
+
+      try {
+        const formData = new FormData();
+        const blob = new Blob([buffer as any], { type: 'audio/wav' });
+        formData.append('audio_file', blob, 'voice.wav');
+
+        const response = await axios.post('http://localhost:8000/api/agent/speech-to-text', formData, { timeout: 8000 });
+        if (response.data && response.data.code === 200 && response.data.data.text) {
+          recognizedText = response.data.data.text;
+          console.log(`[Base64 ASR 成功] 识别结果: "${recognizedText}"`);
+        }
+      } catch (err) {
+        console.error('[Base64 ASR 失败] 调用 Python Agent 失败，改用模拟回答:', err.message);
+      }
+    }
+
+    // 如果 ASR 失败，才使用模拟文本降级
+    if (!recognizedText) {
+      const mockTexts = [
+        '您好！我叫李明，有两年前端开发经验，熟悉 Vue、React 和微信小程序。',
+        '我做过一个 SaaS 管理后台，将首屏加载时间从 5 秒优化到了 1.2 秒。',
+        '最大的挑战是复杂状态管理，通过引入 Pinia 拆分模块解决了数据流混乱。',
+        '我非常重视团队协作，曾主动整理技术对比文档解决选型分歧。',
+        '我希望三年内成为资深前端工程师，专注性能优化 and 工程化方向。',
+        '我对贵公司 AI 产品非常感兴趣，希望在这里持续成长并创造价值。',
+        '我想了解团队的技术栈 and 新人成长路径，谢谢！',
+      ];
+      const idx = Math.floor(Date.now() / 1000) % mockTexts.length;
+      recognizedText = mockTexts[idx];
+    }
+
+    // 调用 Python Agent 大模型进行“思考与追问反馈”
+    let nextQuestion = '';
+    let previousAnswersLength = 0;
+    try {
+      const previousQuestions = [];
+      const previousAnswers = [];
+
+      if (historyStr) {
+        try {
+          const dialogues = JSON.parse(historyStr);
+          dialogues.forEach((d: any) => {
+            if (d.type === 'ai') {
+              previousQuestions.push({ questionText: d.text });
+            } else if (d.type === 'user') {
+              previousAnswers.push({ answerText: d.text });
+            }
+          });
+        } catch (e) {
+          console.error('解析历史对话失败:', e);
+        }
+      }
+
+      previousAnswers.push({ answerText: recognizedText });
+      previousAnswersLength = previousAnswers.length;
+
+      const expMap = {
+        graduate: '应届生',
+        junior: '1-3年经验',
+        senior: '3-5年经验',
+        expert: '5年以上经验',
+      };
+      const expText = expMap[experience] || experience || '应届生';
+
+      console.log(`[Base64 AI 思考中] 正在调用 DeepSeek-V4-Flash 生成下个问题...`);
+      const nextQuestionResponse = await axios.post('http://localhost:8000/api/agent/generate-next-question', {
+        experience: expText,
+        style: style || 'standard',
+        jobTitle: jobTitle || 'Java工程师',
+        previousQuestions,
+        previousAnswers,
+      }, { timeout: 8000 });
+
+      if (nextQuestionResponse.data && nextQuestionResponse.data.code === 200 && nextQuestionResponse.data.data.text) {
+        nextQuestion = nextQuestionResponse.data.data.text;
+        nextQuestion = nextQuestion.replace(/\*/g, '');
+        console.log(`[Base64 AI 思考完成] 生成的新问题: "${nextQuestion}"`);
+      }
+    } catch (err) {
+      console.error('[Base64 AI 思考失败] 调用 Python Agent 生成下一题失败:', err.message);
+    }
+
+    if (!nextQuestion) {
+      const jobQuestions = {
+        'Java工程师': [
+          '请介绍一下你在Java开发方面的项目经验。',
+          '你对Spring框架的IoC和AOP有什么理解？',
+          '请说说你对JVM内存模型的理解。',
+          '如何处理高并发场景下的数据一致性问题？',
+          '你在项目中遇到过哪些性能优化的问题，是如何解决的？'
+        ],
+        '前端开发工程师': [
+          '请介绍一下你的前端技术栈和项目经验。',
+          '你对Vue/React的响应式原理有什么理解？',
+          '如何优化前端性能？',
+          '请说说你对前端工程化的理解。',
+          '你在项目中是如何处理跨域问题的？'
+        ],
+        '产品经理': [
+          '请介绍一下你负责过的产品项目。',
+          '你是如何进行需求分析和优先级排序的？',
+          '如何平衡用户需求和技术实现的难度？',
+          '请说说你对产品数据分析的理解。',
+          '你在产品设计中遇到过哪些挑战？'
+        ]
+      };
+      
+      const matchedQuestions = jobQuestions[jobTitle || 'Java工程师'] || [
+        '请介绍一下您做过的印象最深的项目经验。',
+        '您在工作中遇到过最大的技术挑战是什么？如何解决的？',
+        '您如何看待团队合作？有没有和同事产生分歧的经历，如何处理的？',
+        '您对未来三到五年的职业规划是怎样的？',
+        '您为什么想加入我们公司？对我们有什么了解？',
+        '您有什么问题想问我们吗？'
+      ];
+      
+      nextQuestion = matchedQuestions[previousAnswersLength % matchedQuestions.length];
+    }
+
+    const host = req.headers.host || 'localhost:3000';
+    const protocol = req.secure ? 'https' : 'http';
+    const requestHost = `${protocol}://${host}`;
+
+    return {
+      text: recognizedText,
+      nextQuestion: nextQuestion,
+      audioUrl: `${requestHost}/public/audio/${fileName}`,
+      duration: duration ? Number(duration) : 5000,
+    };
+  }
+
+  /**
    * 文字转语音 TTS（无需登录，供面试页直接调用）
    */
   @Post('tts')

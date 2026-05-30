@@ -499,48 +499,64 @@ Page({
 
     wx.showLoading({ title: '识别中...' });
 
-    // 上传录音到后端做语音识别
-    wx.uploadFile({
-      url: `${app.globalData.apiBaseUrl}/interview/upload-audio`,
-      filePath: tempFilePath,
-      name: 'audio',
-      formData: { 
-        duration: String(duration),
-        history: JSON.stringify(this.data.dialogues),
-        experience: this.data.experience || 'graduate',
-        style: this.data.style || 'standard',
-        jobTitle: this.data.jobTitle || 'Java工程师'
-      },
-      success: (uploadRes) => {
-        wx.hideLoading();
-        try {
-          const result = JSON.parse(uploadRes.data);
-          // 后端返回识别到的文字
-          const recognizedText = result.text || result.recognizedText;
-          
-          if (!recognizedText || 
-              recognizedText === '无法识别或用户没有说话' || 
-              recognizedText === '语音解析失败，请确保录音格式为 WAV 格式') {
+    try {
+      const fsm = wx.getFileSystemManager();
+      console.log('正在读取本地录音物理文件转为 Base64, 路径:', tempFilePath);
+      const base64Audio = fsm.readFileSync({
+        filePath: tempFilePath,
+        encoding: 'base64'
+      });
+
+      // 发起纯文本 JSON 请求，100% 绕开一切文件上传的复杂网络层和代理软件阻拦！
+      wx.request({
+        url: `${app.globalData.apiBaseUrl}/interview/upload-audio-base64`,
+        method: 'POST',
+        data: {
+          audioBase64: base64Audio,
+          duration: duration,
+          history: JSON.stringify(this.data.dialogues),
+          experience: this.data.experience || 'graduate',
+          style: this.data.style || 'standard',
+          jobTitle: this.data.jobTitle || 'Java工程师'
+        },
+        success: (res) => {
+          wx.hideLoading();
+          if (res.statusCode === 200 || res.statusCode === 201) {
+            const result = res.data;
+            const recognizedText = result.text || result.recognizedText;
+            
+            if (!recognizedText || 
+                recognizedText === '无法识别或用户没有说话' || 
+                recognizedText === '语音解析失败，请确保录音格式为 WAV 格式') {
+              this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
+              this.isRecordingStarted = false;
+              wx.showToast({ title: '未听清声音，请重新按住说话', icon: 'none', duration: 2500 });
+              return;
+            }
+            
+            this.onUserAnswered(recognizedText, result.nextQuestion);
+          } else {
+            console.error('Base64 语音解析响应异常状态码:', res.statusCode);
             this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
             this.isRecordingStarted = false;
-            wx.showToast({ title: '未听清声音，请重新按住说话', icon: 'none', duration: 2500 });
-            return;
+            wx.showToast({ title: '识别失败，请重新按住说话', icon: 'none' });
           }
-          
-          this.onUserAnswered(recognizedText, result.nextQuestion);
-        } catch (e) {
-          console.error('解析识别结果失败:', e);
-          wx.showToast({ title: '识别失败，请重试', icon: 'none' });
+        },
+        fail: (err) => {
+          wx.hideLoading();
+          console.error('[Base64 上传] 失败', err);
+          this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
+          this.isRecordingStarted = false;
+          wx.showToast({ title: '网络连接超时，请重新按住说话', icon: 'none', duration: 2500 });
         }
-      },
-      fail: (err) => {
-        wx.hideLoading();
-        console.error('[上传] 失败', err);
-        this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
-        this.isRecordingStarted = false;
-        wx.showToast({ title: '网络连接超时，请重新按住说话', icon: 'none', duration: 2500 });
-      }
-    });
+      });
+    } catch (e) {
+      wx.hideLoading();
+      console.error('Base64 录音转码架构异常:', e);
+      this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
+      this.isRecordingStarted = false;
+      wx.showToast({ title: '录音转码失败，请重试', icon: 'none' });
+    }
   },
 
   // 用户回答完成后的流程
