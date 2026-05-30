@@ -151,7 +151,7 @@ Page({
       this.audioContext = null;
     }
 
-    console.log('开始播放面试官语音, URL:', url);
+    console.log('正在缓存并播放面试官语音, 远程 URL:', url);
     
     // 设置全局音频选项（防静音、强行使用扬声器）
     if (wx.setInnerAudioOption) {
@@ -163,31 +163,74 @@ Page({
       });
     }
 
+    // 针对安卓和苹果双重优化：先下载到手机本地，再进行播放，彻底解决流式解码不兼容导致的静音问题
+    wx.downloadFile({
+      url: url,
+      success: (downloadRes) => {
+        if (downloadRes.statusCode === 200) {
+          const localPath = downloadRes.tempFilePath;
+          console.log('语音文件极速缓存成功，本地路径:', localPath);
+
+          const ctx = wx.createInnerAudioContext();
+          ctx.src = localPath;
+          ctx.autoplay = true;
+          ctx.obeyMuteSwitch = false; 
+          this.audioContext = ctx;
+
+          ctx.onPlay(() => {
+            console.log('面试官语音实际播放中...');
+          });
+
+          ctx.onEnded(() => {
+            console.log('面试官语音播放正常结束');
+            this.setData({ isAISpeaking: false });
+            this.stopSpeakingAnimation();
+          });
+
+          ctx.onError((err) => {
+            console.error('本地音频播放失败，详细错误:', err);
+            this.setData({ isAISpeaking: false });
+            this.stopSpeakingAnimation();
+            this._simulateSpeaking(3000);
+          });
+
+          ctx.play();
+        } else {
+          console.warn('语音下载失败，尝试直接在线播放...', downloadRes);
+          this._playOnlineAudioUrl(url);
+        }
+      },
+      fail: (err) => {
+        console.warn('极速缓存失败，降级为直接在线播放...', err);
+        this._playOnlineAudioUrl(url);
+      }
+    });
+  },
+
+  // 备用降级方案：在线直接播放
+  _playOnlineAudioUrl(url) {
     const ctx = wx.createInnerAudioContext();
     ctx.src = url;
     ctx.autoplay = true;
-    ctx.obeyMuteSwitch = false; // 针对 iOS 双重保障
+    ctx.obeyMuteSwitch = false;
     this.audioContext = ctx;
 
     ctx.onPlay(() => {
-      console.log('面试官语音实际播放中...');
+      console.log('面试官在线语音实际播放中...');
     });
 
     ctx.onEnded(() => {
-      console.log('面试官语音播放正常结束');
       this.setData({ isAISpeaking: false });
       this.stopSpeakingAnimation();
     });
 
     ctx.onError((err) => {
-      console.error('音频实际播放失败，详细错误:', err);
-      // 容错：如果音频播放报错，自动切换为模拟说话动画，不影响核心面试进度
+      console.error('在线音频播放失败', err);
       this.setData({ isAISpeaking: false });
       this.stopSpeakingAnimation();
       this._simulateSpeaking(3000);
     });
 
-    // 显式触发播放，确保在所有机型下均能发声
     ctx.play();
   },
 
