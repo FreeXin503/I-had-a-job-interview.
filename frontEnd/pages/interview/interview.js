@@ -319,16 +319,46 @@ Page({
   // 嘴巴动画
   // ────────────────────────────────────────
   startSpeakingAnimation() {
-    if (this.speakInterval) clearInterval(this.speakInterval);
+    if (this.speakInterval) {
+      clearTimeout(this.speakInterval);
+      this.speakInterval = null;
+    }
     this.setData({ speakFrame: true });
-    this.speakInterval = setInterval(() => {
-      this.setData({ speakFrame: !this.data.speakFrame });
-    }, 250);
+    
+    // 使用递归 setTimeout 实现极具人类呼吸感与语气顿挫的“拟真随机嘴型动画”
+    const runAnimation = () => {
+      if (!this.data.isAISpeaking) {
+        this.setData({ speakFrame: false });
+        return;
+      }
+      
+      const nextFrameState = !this.data.speakFrame;
+      this.setData({ speakFrame: nextFrameState });
+      
+      let nextDelay = 150;
+      
+      if (nextFrameState === false) {
+        // 闭嘴状态：模拟短暂呼吸、标点停顿或吞咽，随机产生 100ms ~ 550ms 的自然停歇
+        const randomChance = Math.random();
+        if (randomChance < 0.18) {
+          nextDelay = 300 + Math.random() * 250; // 较长的换气/语气停顿
+        } else {
+          nextDelay = 100 + Math.random() * 120; // 正常的闭口过渡时间
+        }
+      } else {
+        // 张嘴状态：模拟元音发音或声调起伏，开口时长随机在 70ms ~ 230ms 之间波动
+        nextDelay = 70 + Math.random() * 160;
+      }
+      
+      this.speakInterval = setTimeout(runAnimation, nextDelay);
+    };
+    
+    runAnimation();
   },
 
   stopSpeakingAnimation() {
     if (this.speakInterval) {
-      clearInterval(this.speakInterval);
+      clearTimeout(this.speakInterval);
       this.speakInterval = null;
     }
     this.setData({ speakFrame: false });
