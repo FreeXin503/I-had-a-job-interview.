@@ -1,9 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import * as express from 'express';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // 静态文件托管
+  app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
   // 启用CORS
   app.enableCors({

@@ -78,7 +78,7 @@ class InterviewAgent:
         
         # 调用大模型生成问题
         response = self.client.chat.completions.create(
-            model="deepseek-chat",
+            model="deepseek-v4-flash",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": "请生成第一个面试问题。"}
@@ -87,6 +87,8 @@ class InterviewAgent:
         )
         
         question_text = response.choices[0].message.content
+        if question_text:
+            question_text = question_text.replace("*", "")
         
         return {
             "text": question_text,
@@ -130,7 +132,7 @@ class InterviewAgent:
         
         # 调用大模型生成问题
         response = self.client.chat.completions.create(
-            model="deepseek-chat",
+            model="deepseek-v4-flash",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": "请生成下一个面试问题。"}
@@ -139,6 +141,8 @@ class InterviewAgent:
         )
         
         question_text = response.choices[0].message.content
+        if question_text:
+            question_text = question_text.replace("*", "")
         
         return {
             "text": question_text,
@@ -170,7 +174,7 @@ class InterviewAgent:
 """
         
         response = self.client.chat.completions.create(
-            model="deepseek-chat",
+            model="deepseek-v4-flash",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": "请分析这个回答。"}

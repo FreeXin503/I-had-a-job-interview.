@@ -5,6 +5,7 @@ import { Interview } from './entities/interview.entity';
 import { InterviewQuestion } from './entities/interview-question.entity';
 import { InterviewAnswer } from './entities/interview-answer.entity';
 import { AgentService } from '../agent/agent.service';
+import { TtsService } from './tts.service';
 import { CreateInterviewDto } from './dto/create-interview.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
 
@@ -18,6 +19,7 @@ export class InterviewService {
     @InjectRepository(InterviewAnswer)
     private answerRepository: Repository<InterviewAnswer>,
     private agentService: AgentService,
+    private ttsService: TtsService,
   ) {}
 
   /**
@@ -28,6 +30,7 @@ export class InterviewService {
       userId,
       experience: dto.experience,
       style: dto.style,
+      voiceGender: dto.voiceGender || 'female',
       jobTitle: dto.jobTitle,
       resumeMode: dto.resumeMode,
       resumeFileId: dto.resumeFileId,
@@ -71,6 +74,19 @@ export class InterviewService {
     });
     await this.questionRepository.save(question);
 
+    // 生成 TTS 语音并更新 audioUrl
+    const audioUrl = await this.ttsService.generateSpeech(
+      firstQuestion.text,
+      question.id,
+      interview.voiceGender,
+      interview.style,
+    );
+    if (audioUrl) {
+      question.audioUrl = audioUrl;
+      await this.questionRepository.save(question);
+      firstQuestion.audioUrl = audioUrl;
+    }
+
     return {
       interviewId: interview.id,
       question: firstQuestion,
@@ -111,6 +127,19 @@ export class InterviewService {
       questionType: nextQuestion.type || 'follow_up',
     });
     await this.questionRepository.save(question);
+
+    // 生成 TTS 语音并更新 audioUrl
+    const audioUrl = await this.ttsService.generateSpeech(
+      nextQuestion.text,
+      question.id,
+      interview.voiceGender,
+      interview.style,
+    );
+    if (audioUrl) {
+      question.audioUrl = audioUrl;
+      await this.questionRepository.save(question);
+      nextQuestion.audioUrl = audioUrl;
+    }
 
     return nextQuestion;
   }

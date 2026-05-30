@@ -11,10 +11,24 @@ Page({
     dialogues: [] as any[],
     duration: 0,
     timerInterval: null as any,
-    audioContext: null as any
+    audioContext: null as any,
+    voiceGender: 'female',
+    activeInterviewer: 'female',
+    femaleName: '王雅琪 (资深HR)',
+    maleName: '张睿达 (技术主考官)',
+    speakFrame: false
   },
 
+  // 内部定时器
+  speakInterval: null as any,
+
   onLoad() {
+    const config = wx.getStorageSync('interviewConfig') || {};
+    const gender = config.voiceGender || 'female';
+    this.setData({
+      voiceGender: gender,
+      activeInterviewer: gender
+    });
     this.initInterview();
     this.initRecorder();
   },
@@ -26,6 +40,48 @@ Page({
     if (this.data.audioContext) {
       this.data.audioContext.destroy();
     }
+    this.stopSpeakingAnimation();
+  },
+
+  // 开始嘴巴张开闭合动画
+  startSpeakingAnimation() {
+    if (this.speakInterval) {
+      clearInterval(this.speakInterval);
+    }
+    this.setData({ speakFrame: true });
+    this.speakInterval = setInterval(() => {
+      this.setData({
+        speakFrame: !this.data.speakFrame
+      });
+    }, 250); // 每250毫秒张合一次
+  },
+
+  // 停止嘴巴动画
+  stopSpeakingAnimation() {
+    if (this.speakInterval) {
+      clearInterval(this.speakInterval);
+      this.speakInterval = null;
+    }
+    this.setData({ speakFrame: false });
+  },
+
+  // 切换面试官角色
+  switchInterviewer() {
+    const nextInterviewer = this.data.activeInterviewer === 'female' ? 'male' : 'female';
+    this.setData({
+      activeInterviewer: nextInterviewer
+    });
+    
+    // 更新本地配置中的性别，这样后续的问题请求也会自动使用新声音！
+    const config = wx.getStorageSync('interviewConfig') || {};
+    config.voiceGender = nextInterviewer;
+    wx.setStorageSync('interviewConfig', config);
+
+    wx.showToast({
+      title: '已切换为：' + (nextInterviewer === 'female' ? this.data.femaleName : this.data.maleName),
+      icon: 'none',
+      duration: 1500
+    });
   },
 
   // 初始化面试
@@ -267,9 +323,16 @@ Page({
       isAISpeaking: true,
       audioContext
     });
+    this.startSpeakingAnimation();
 
     audioContext.onEnded(() => {
       this.setData({ isAISpeaking: false });
+      this.stopSpeakingAnimation();
+    });
+
+    audioContext.onError(() => {
+      this.setData({ isAISpeaking: false });
+      this.stopSpeakingAnimation();
     });
   },
 

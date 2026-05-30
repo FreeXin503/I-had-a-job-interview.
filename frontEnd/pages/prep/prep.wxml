@@ -11,6 +11,15 @@
     </view>
   </view>
 
+  <!-- 面试官性别 -->
+  <view class="prep-section">
+    <view class="prep-section-title">选择面试官</view>
+    <view class="options-grid gender-grid">
+      <view class="option-pill {{voiceGender === 'female' ? 'active' : ''}}" bindtap="selectVoiceGender" data-value="female">👩 女生面试官</view>
+      <view class="option-pill {{voiceGender === 'male' ? 'active' : ''}}" bindtap="selectVoiceGender" data-value="male">👨 男生面试官</view>
+    </view>
+  </view>
+
   <!-- 面试官风格 -->
   <view class="prep-section">
     <view class="prep-section-title">面试官风格</view>

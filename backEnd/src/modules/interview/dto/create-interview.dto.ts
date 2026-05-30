@@ -7,6 +7,10 @@ export class CreateInterviewDto {
   @IsString()
   style: string;
 
+  @IsOptional()
+  @IsString()
+  voiceGender?: string;
+
   @IsString()
   jobTitle: string;
 

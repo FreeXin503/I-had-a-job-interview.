@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
@@ -13,16 +13,20 @@ import { AgentModule } from './modules/agent/agent.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'ai_interview',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // 生产环境应设为false
-      logging: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DB_HOST', 'localhost'),
+        port: configService.get<number>('DB_PORT', 3306),
+        username: configService.get<string>('DB_USERNAME', 'root'),
+        password: configService.get<string>('DB_PASSWORD', '123456'),
+        database: configService.get<string>('DB_DATABASE', 'ai_interview'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true, // 生产环境应设为false
+        logging: true,
+      }),
     }),
     AuthModule,
     UserModule,

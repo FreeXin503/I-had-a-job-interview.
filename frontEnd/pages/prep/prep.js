@@ -5,6 +5,7 @@ Page({
   data: {
     experience: 'graduate',
     style: 'standard',
+    voiceGender: 'female',
     selectedJob: 'Java工程师',
     resumeMode: 'no-resume',
     resumeUploaded: false,
@@ -33,6 +34,13 @@ Page({
   selectStyle(e) {
     this.setData({
       style: e.currentTarget.dataset.value
+    });
+  },
+
+  // 选择面试官性别
+  selectVoiceGender(e) {
+    this.setData({
+      voiceGender: e.currentTarget.dataset.value
     });
   },
 
@@ -99,6 +107,7 @@ Page({
     const interviewConfig = {
       experience: this.data.experience,
       style: this.data.style,
+      voiceGender: this.data.voiceGender,
       job: this.data.selectedJob,
       resumeMode: this.data.resumeMode,
       resumeFileId: this.data.resumeFileId

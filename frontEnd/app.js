@@ -3,7 +3,7 @@ App({
   globalData: {
     userInfo: null,
     token: '',
-    apiBaseUrl: 'http://localhost:3000/api',
+    apiBaseUrl: 'http://10.148.148.74:3000/api',
     pointsBalance: 20,
     mockInterviewCount: 0,
     resumeOptimizationCount: 0

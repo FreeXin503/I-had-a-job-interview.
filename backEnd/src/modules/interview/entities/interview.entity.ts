@@ -23,6 +23,9 @@ export class Interview {
   @Column()
   style: string;
 
+  @Column({ default: 'female' })
+  voiceGender: string;
+
   @Column()
   jobTitle: string;
 
