@@ -326,6 +326,7 @@ Page({
     this.setData({ speakFrame: true });
     
     // 使用递归 setTimeout 实现极具人类呼吸感与语气顿挫的“拟真随机嘴型动画”
+    // 已将动作频率放缓，使其完美契合正常的中文说话语速（每秒 3~4 个音节），更显从容儒雅气质
     const runAnimation = () => {
       if (!this.data.isAISpeaking) {
         this.setData({ speakFrame: false });
@@ -335,19 +336,19 @@ Page({
       const nextFrameState = !this.data.speakFrame;
       this.setData({ speakFrame: nextFrameState });
       
-      let nextDelay = 150;
+      let nextDelay = 220;
       
       if (nextFrameState === false) {
-        // 闭嘴状态：模拟短暂呼吸、标点停顿或吞咽，随机产生 100ms ~ 550ms 的自然停歇
+        // 闭嘴状态：模拟词与词之间的短暂换气、标点停顿，随机产生自然舒缓的停歇
         const randomChance = Math.random();
         if (randomChance < 0.18) {
-          nextDelay = 300 + Math.random() * 250; // 较长的换气/语气停顿
+          nextDelay = 400 + Math.random() * 300; // 语气过渡/换气停顿 (400ms ~ 700ms)
         } else {
-          nextDelay = 100 + Math.random() * 120; // 正常的闭口过渡时间
+          nextDelay = 180 + Math.random() * 120; // 正常的闭口过渡时间 (180ms ~ 300ms)
         }
       } else {
-        // 张嘴状态：模拟元音发音或声调起伏，开口时长随机在 70ms ~ 230ms 之间波动
-        nextDelay = 70 + Math.random() * 160;
+        // 张嘴状态：配合放缓的语速，将开口时间延长，模拟清晰的音节吐字与声调起伏
+        nextDelay = 200 + Math.random() * 180; // 吐字张口时间 (200ms ~ 380ms)
       }
       
       this.speakInterval = setTimeout(runAnimation, nextDelay);
