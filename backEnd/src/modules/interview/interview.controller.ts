@@ -200,7 +200,7 @@ export class InterviewController {
     @Body('style') style: string,
     @Request() req: any,
   ) {
-    if (!text) return { audioUrl: '' };
+    if (!text) return { audioUrl: '', base64: '' };
     // 去除任何 markdown 星号标记，使 TTS 合成文本最干净
     const cleanText = text.replace(/\*/g, '');
     const questionId = `tts_${Date.now()}`;
@@ -219,7 +219,22 @@ export class InterviewController {
     // 将后台写死的 http://localhost:3000 动态替换为手机请求所在的局域网 IP 主机地址
     const dynamicAudioUrl = audioUrl.replace('http://localhost:3000', requestHost);
 
-    return { audioUrl: dynamicAudioUrl || '' };
+    // 读取本地生成的音频文件并转换为 Base64
+    let base64 = '';
+    try {
+      const fileName = `question_${questionId}.mp3`;
+      const filePath = path.join(process.cwd(), 'public', 'audio', fileName);
+      if (fs.existsSync(filePath)) {
+        base64 = fs.readFileSync(filePath).toString('base64');
+      }
+    } catch (e) {
+      console.error('读取音频文件并转为 Base64 失败:', e);
+    }
+
+    return { 
+      audioUrl: dynamicAudioUrl || '', 
+      base64 
+    };
   }
 
   /**

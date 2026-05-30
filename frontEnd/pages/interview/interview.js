@@ -1,7 +1,6 @@
 // pages/interview/interview.js
 const app = getApp();
 const recorderManager = wx.getRecorderManager();
-const plugin = requirePlugin('WechatSI');
 
 // 面试官问题库（按轮次循环）
 const AI_QUESTIONS = [
@@ -120,29 +119,64 @@ Page({
     this.setData({ isAISpeaking: true });
     this.startSpeakingAnimation();
 
-    // 去除星号等干扰符号，确保合成文本最干净
-    const cleanText = text.replace(/\*/g, '');
+    const gender = this.data.voiceGender || 'female';
+    const style = (wx.getStorageSync('interviewConfig') || {}).style || 'standard';
 
-    // 使用微信官方原生“同声传译”插件，完全运行在手机本地，彻底免疫一切网络、证书与局域网拦截！
-    console.log('正在调用微信原生同声传译 TTS 合成:', cleanText);
-    plugin.textToSpeech({
-      lang: "zh_CN",
-      tts: true,
-      content: cleanText,
+    // 调动后端合成，并通过 Base64 直接传回，完全摆脱网络证书、局域网下载拦截以及微信第三方插件权限限制！
+    console.log('正在调用后端接口请求语音合成与 Base64 流...');
+    wx.request({
+      url: `${app.globalData.apiBaseUrl}/interview/tts`,
+      method: 'POST',
+      data: { text, gender, style },
       success: (res) => {
-        if (res.filename) {
-          console.log("微信同声传译合成成功，本地文件路径:", res.filename);
-          this._playAudioUrl(res.filename);
+        if (res.statusCode === 201 && res.data && res.data.base64) {
+          console.log('TTS 语音合成 Base64 流请求成功！开始进行本地文件直写播放...');
+          this._playBase64Audio(res.data.base64);
+        } else if (res.statusCode === 200 && res.data && res.data.base64) {
+          console.log('TTS 语音合成 Base64 流请求成功！开始进行本地文件直写播放...');
+          this._playBase64Audio(res.data.base64);
         } else {
-          console.warn("微信同声传译合成成功但未返回文件名，切换为模拟动画");
-          this._simulateSpeaking(cleanText.length * 80);
+          // 降级使用远程下载播放，或者在线流播放
+          console.warn('TTS返回的Base64流为空，降级直接使用远程Url进行本地缓存播放:', res.data.audioUrl);
+          if (res.data && res.data.audioUrl) {
+            this._playAudioUrl(res.data.audioUrl);
+          } else {
+            this._simulateSpeaking(text.length * 80);
+          }
         }
       },
       fail: (err) => {
-        console.error("微信同声传译合成失败，切换为模拟动画:", err);
-        this._simulateSpeaking(cleanText.length * 80);
+        console.error('TTS接口请求失败，降级为模拟动画:', err);
+        this._simulateSpeaking(text.length * 80);
       }
     });
+  },
+
+  // 将 Base64 音频流直接解密并保存到手机沙箱中直解播放（100%发声，免受任何下载/网络拦截影响）
+  _playBase64Audio(base64Data) {
+    try {
+      const fsm = wx.getFileSystemManager();
+      // 在微信用户专属临时数据沙箱中创建唯一的本地文件
+      const localFilePath = `${wx.env.USER_DATA_PATH}/tts_temp_${Date.now()}.mp3`;
+
+      fsm.writeFile({
+        filePath: localFilePath,
+        data: base64Data,
+        encoding: 'base64',
+        success: () => {
+          console.log('Base64 物理音频文件写入手机本地成功！绝对物理路径:', localFilePath);
+          // 调用我们已有的硬件播放函数播放这个本地临时物理文件，完美发声！
+          this._playAudioUrl(localFilePath);
+        },
+        fail: (err) => {
+          console.error('Base64 写入手机临时文件失败，详细报错:', err);
+          this._simulateSpeaking(3000);
+        }
+      });
+    } catch (e) {
+      console.error('Base64 本地播放逻辑内部异常:', e);
+      this._simulateSpeaking(3000);
+    }
   },
 
   // 播放音频 URL
