@@ -60,7 +60,7 @@ export class InterviewController {
         const blob = new Blob([file.buffer as any], { type: file.mimetype });
         formData.append('audio_file', blob, originalName);
 
-        const response = await axios.post('http://localhost:8000/api/agent/speech-to-text', formData);
+        const response = await axios.post('http://localhost:8000/api/agent/speech-to-text', formData, { timeout: 8000 });
         if (response.data && response.data.code === 200 && response.data.data.text) {
           recognizedText = response.data.data.text;
           console.log(`[ASR 成功] 识别结果: "${recognizedText}"`);
@@ -127,7 +127,7 @@ export class InterviewController {
         jobTitle: jobTitle || 'Java工程师',
         previousQuestions,
         previousAnswers,
-      });
+      }, { timeout: 8000 });
 
       if (nextQuestionResponse.data && nextQuestionResponse.data.code === 200 && nextQuestionResponse.data.data.text) {
         nextQuestion = nextQuestionResponse.data.data.text;

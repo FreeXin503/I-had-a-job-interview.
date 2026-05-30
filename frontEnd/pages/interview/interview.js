@@ -404,6 +404,11 @@ Page({
   },
 
   startRecording() {
+    if (this.data.isRecording || this.isRecordingStarted) {
+      console.warn('当前已在录音状态中，阻止重复录音触发');
+      return;
+    }
+
     // 强制停止并释放播放器占用的硬件音频焦点，彻底杜绝第一次录音时 operatesRecorder:fail:audio 冲突！
     if (this.audioContext) {
       try {
@@ -457,8 +462,13 @@ Page({
   },
 
   doStartRecording() {
+    if (this.data.isRecording || this.isRecordingStarted) {
+      console.warn('检测到已经在录音中，阻止重复调用 doStartRecording');
+      return;
+    }
     try {
       this.isRecordingStarted = true;
+      this.setData({ isRecording: true, waveActive: true });
       recorderManager.start({
         duration: 60000,
         sampleRate: 16000,
@@ -468,6 +478,7 @@ Page({
     } catch (err) {
       console.error('[录音] 启动失败', err);
       this.isRecordingStarted = false;
+      this.setData({ isRecording: false, waveActive: false });
       wx.showToast({ title: '启动录音失败', icon: 'none' });
     }
   },
@@ -523,7 +534,9 @@ Page({
       fail: (err) => {
         wx.hideLoading();
         console.error('[上传] 失败', err);
-        wx.showToast({ title: '网络连接失败，请重试', icon: 'none' });
+        this.setData({ isRecording: false, waveActive: false, isAISpeaking: false });
+        this.isRecordingStarted = false;
+        wx.showToast({ title: '网络连接超时，请重新按住说话', icon: 'none', duration: 2500 });
       }
     });
   },
