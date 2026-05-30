@@ -502,10 +502,7 @@ Page({
     try {
       const fsm = wx.getFileSystemManager();
       console.log('正在读取本地录音物理文件转为 Base64, 路径:', tempFilePath);
-      const base64Audio = fsm.readFileSync({
-        filePath: tempFilePath,
-        encoding: 'base64'
-      });
+      const base64Audio = fsm.readFileSync(tempFilePath, 'base64');
 
       // 发起纯文本 JSON 请求，100% 绕开一切文件上传的复杂网络层和代理软件阻拦！
       wx.request({
