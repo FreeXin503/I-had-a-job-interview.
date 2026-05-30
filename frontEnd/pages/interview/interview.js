@@ -326,11 +326,11 @@ Page({
     
     this.setData({ speakOpacity: 0.0 });
     
-    let currentState = 0; // 0 = 闭嘴, 4 = 完全张开 (共 5 个过渡档位)
+    let currentState = 0; // 0 = 闭嘴, 9 = 完全张开 (共 10 个高保真过渡档位，使边缘动作无比细腻丝滑)
     let direction = 1;     // 1 = 渐渐张嘴, -1 = 渐渐闭嘴
     let pauseFrames = 0;   // 模拟词组句读之间的自然换气停顿
     
-    // 使用 5 阶高保真渐变序列 (0.0 -> 0.25 -> 0.50 -> 0.75 -> 1.0) 完美重现平滑嘴唇开合动作
+    // 使用 10 阶微米级透明度渐变序列，配合 0.08s 的 CSS transition，呈现出影院般流畅的唇形开合动画
     const runAnimation = () => {
       if (!this.data.isAISpeaking) {
         this.setData({ speakOpacity: 0.0 });
@@ -340,15 +340,15 @@ Page({
       // 当处于闭口状态（0）并且即将张开时，模拟标点换气与说话节奏中的极短停歇
       if (currentState === 0 && direction === 1) {
         if (pauseFrames === 0) {
-          // 20% 概率触发一次自然的字词停顿/换气 (停顿 250ms ~ 550ms)
+          // 20% 概率触发一次自然的字词停顿/换气 (停顿 240ms ~ 480ms)
           if (Math.random() < 0.20) {
-            pauseFrames = Math.floor(2 + Math.random() * 3);
+            pauseFrames = Math.floor(4 + Math.random() * 4);
           }
         }
         
         if (pauseFrames > 0) {
           pauseFrames--;
-          this.speakInterval = setTimeout(runAnimation, 120);
+          this.speakInterval = setTimeout(runAnimation, 60);
           return;
         }
       }
@@ -357,23 +357,23 @@ Page({
       currentState += direction;
       
       // 边界检查并转向
-      if (currentState >= 4) {
-        currentState = 4;
+      if (currentState >= 9) {
+        currentState = 9;
         direction = -1; // 达到最大张度，开始闭合
       } else if (currentState <= 0) {
         currentState = 0;
         direction = 1;  // 完全闭合，开始新一轮张口
       }
       
-      // 映射到具体的 5 个平滑透明度档位，实现双层图片自然交叉混合
-      const opacityLevels = [0.0, 0.22, 0.48, 0.76, 1.0];
+      // 映射到具体的 10 个微细透明度档位，配合双层图片进行超高精度交叉淡入淡出
+      const opacityLevels = [0.0, 0.11, 0.22, 0.33, 0.45, 0.58, 0.70, 0.82, 0.91, 1.0];
       const nextOpacity = opacityLevels[currentState];
       
       this.setData({ speakOpacity: nextOpacity });
       
-      // 精准放缓音节吞吐周期：每阶过渡时间设为 110ms ~ 145ms
-      // 这意味着一个完整的音节吐字（张口 + 闭口）需要约 800ms ~ 1100ms 的平滑起伏，极为优雅沉稳，完美匹配真人中等语速
-      const stepDelay = 110 + Math.random() * 35;
+      // 由于升级到了 10 档过渡，每阶的递进延迟缩短至 55ms ~ 75ms
+      // 使得一次完整的“张口 + 闭口”音节吞吐周期历时约 1000ms ~ 1250ms，极其平滑且符合真人沉稳慢速的说话语速
+      const stepDelay = 55 + Math.random() * 20;
       
       this.speakInterval = setTimeout(runAnimation, stepDelay);
     };

@@ -219,9 +219,31 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 120%, #1e1b4b 0%, #030712 100%);
+  background: #030712;
   z-index: 1;
   overflow: hidden;
+}
+
+.office-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.65;
+  filter: blur(28rpx); /* 给办公室底图上高强度模糊以形成极其纯正自然的毛玻璃效果 */
+  transform: scale(1.1); /* 稍微放大防止边缘发白漏边 */
+}
+
+.frosted-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.45); /* 深色高质感半透明磨砂面遮罩 */
+  z-index: 1;
 }
 
 /* 氛围发光霓虹（毛玻璃质感底物） */

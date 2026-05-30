@@ -10,8 +10,10 @@
   <view class="video-pane">
     <!-- 2D写实形象展示 -->
     <view class="interviewer-avatar-container">
-      <!-- 极美毛玻璃与环境氛围背景图底层 -->
+      <!-- 极美毛玻璃与环境氛围背景图底层 (公司办公室毛玻璃背景) -->
       <view class="frosted-glass-backdrop">
+        <image class="office-bg-image" src="/assets/avatars/office_bg.jpg" mode="aspectFill" />
+        <view class="frosted-overlay"></view>
         <view class="ambient-glow glow-1"></view>
         <view class="ambient-glow glow-2"></view>
       </view>
