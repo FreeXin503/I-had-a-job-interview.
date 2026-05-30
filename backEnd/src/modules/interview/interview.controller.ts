@@ -57,7 +57,7 @@ export class InterviewController {
 
       try {
         const formData = new FormData();
-        const blob = new Blob([file.buffer as any], { type: file.mimetype });
+        const blob = new Blob([new Uint8Array(file.buffer)], { type: file.mimetype });
         formData.append('audio_file', blob, originalName);
 
         const response = await axios.post('http://localhost:8000/api/agent/speech-to-text', formData, { timeout: 8000 });
@@ -218,7 +218,7 @@ export class InterviewController {
 
       try {
         const formData = new FormData();
-        const blob = new Blob([buffer as any], { type: 'audio/wav' });
+        const blob = new Blob([new Uint8Array(buffer)], { type: 'audio/wav' });
         formData.append('audio_file', blob, 'voice.wav');
 
         const response = await axios.post('http://localhost:8000/api/agent/speech-to-text', formData, { timeout: 8000 });
