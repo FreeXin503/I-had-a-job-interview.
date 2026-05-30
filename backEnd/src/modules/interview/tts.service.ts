@@ -1,11 +1,57 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { UniversalEdgeTTS } from 'edge-tts-universal';
 import * as fs from 'fs';
 import * as path from 'path';
 
 @Injectable()
-export class TtsService {
+export class TtsService implements OnModuleInit {
   private readonly logger = new Logger(TtsService.name);
+
+  onModuleInit() {
+    this.logger.log('TTS Service initialized, starting automated disk cleanup job...');
+    // Run cleanup immediately on startup
+    this.cleanOldAudioFiles();
+    // Then run every 30 minutes
+    setInterval(() => {
+      this.cleanOldAudioFiles();
+    }, 30 * 60 * 1000);
+  }
+
+  private cleanOldAudioFiles() {
+    try {
+      const publicDir = path.join(process.cwd(), 'public', 'audio');
+      if (!fs.existsSync(publicDir)) {
+        return;
+      }
+
+      const files = fs.readdirSync(publicDir);
+      const now = Date.now();
+      const oneHourAgo = now - 60 * 60 * 1000; // 1 hour
+
+      let deletedCount = 0;
+
+      for (const file of files) {
+        if (file.endsWith('.mp3') || file.endsWith('.wav')) {
+          const filePath = path.join(publicDir, file);
+          try {
+            const stats = fs.statSync(filePath);
+            if (stats.mtimeMs < oneHourAgo) {
+              fs.unlinkSync(filePath);
+              deletedCount++;
+            }
+          } catch (e) {
+            this.logger.error(`Failed to clean file ${file}:`, e);
+          }
+        }
+      }
+
+      if (deletedCount > 0) {
+        this.logger.log(`[Disk Cleanup] Cleaned up ${deletedCount} temporary audio files (older than 1 hour).`);
+      }
+    } catch (error) {
+      this.logger.error('[Disk Cleanup] Failed to run audio files cleanup:', error);
+    }
+  }
 
   /**
    * 将文字转为语音，并返回静态文件的URL

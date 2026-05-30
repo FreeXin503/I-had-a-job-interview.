@@ -37,6 +37,9 @@ export class InterviewController {
     @Body('duration') duration: number,
     @Request() req: any,
     @Body('history') historyStr?: string,
+    @Body('experience') experience?: string,
+    @Body('style') style?: string,
+    @Body('jobTitle') jobTitle?: string,
   ) {
     const uploadDir = path.join(process.cwd(), 'public', 'audio');
     if (!fs.existsSync(uploadDir)) {
@@ -108,11 +111,20 @@ export class InterviewController {
       previousAnswers.push({ answerText: recognizedText });
       previousAnswersLength = previousAnswers.length;
 
+      // 映射经验值为中文
+      const expMap = {
+        graduate: '应届生',
+        junior: '1-3年经验',
+        senior: '3-5年经验',
+        expert: '5年以上经验',
+      };
+      const expText = expMap[experience] || experience || '应届生';
+
       console.log(`[AI 思考中] 正在调用 DeepSeek-V4-Flash 生成下个问题...`);
       const nextQuestionResponse = await axios.post('http://localhost:8000/api/agent/generate-next-question', {
-        experience: '2年经验',
-        style: 'standard',
-        jobTitle: '前端开发工程师',
+        experience: expText,
+        style: style || 'standard',
+        jobTitle: jobTitle || 'Java工程师',
         previousQuestions,
         previousAnswers,
       });
@@ -127,9 +139,33 @@ export class InterviewController {
       console.error('[AI 思考失败] 调用 Python Agent 生成下一题失败:', err.message);
     }
 
-    // 思考失败时的兜底（从原先硬编码的问题库里取下一道）
+    // 思考失败时的兜底（从原先硬编码的问题库或基于岗位类型取下一道）
     if (!nextQuestion) {
-      const AI_QUESTIONS = [
+      const jobQuestions = {
+        'Java工程师': [
+          '请介绍一下你在Java开发方面的项目经验。',
+          '你对Spring框架的IoC和AOP有什么理解？',
+          '请说说你对JVM内存模型的理解。',
+          '如何处理高并发场景下的数据一致性问题？',
+          '你在项目中遇到过哪些性能优化的问题，是如何解决的？'
+        ],
+        '前端开发工程师': [
+          '请介绍一下你的前端技术栈和项目经验。',
+          '你对Vue/React的响应式原理有什么理解？',
+          '如何优化前端性能？',
+          '请说说你对前端工程化的理解。',
+          '你在项目中是如何处理跨域问题的？'
+        ],
+        '产品经理': [
+          '请介绍一下你负责过的产品项目。',
+          '你是如何进行需求分析和优先级排序的？',
+          '如何平衡用户需求和技术实现的难度？',
+          '请说说你对产品数据分析的理解。',
+          '你在产品设计中遇到过哪些挑战？'
+        ]
+      };
+      
+      const matchedQuestions = jobQuestions[jobTitle || 'Java工程师'] || [
         '请介绍一下您做过的印象最深的项目经验。',
         '您在工作中遇到过最大的技术挑战是什么？如何解决的？',
         '您如何看待团队合作？有没有和同事产生分歧的经历，如何处理的？',
@@ -137,7 +173,8 @@ export class InterviewController {
         '您为什么想加入我们公司？对我们有什么了解？',
         '您有什么问题想问我们吗？'
       ];
-      nextQuestion = AI_QUESTIONS[previousAnswersLength % AI_QUESTIONS.length];
+      
+      nextQuestion = matchedQuestions[previousAnswersLength % matchedQuestions.length];
     }
 
     // 动态提取手机请求过来的真实主机地址与协议 (如 http://10.148.148.74:3000)

@@ -13,6 +13,12 @@ const AI_QUESTIONS = [
   '您有什么问题想问我们吗？'
 ];
 
+const JOB_FIRST_QUESTIONS = {
+  'Java工程师': '您好，欢迎参加Java工程师的面试。请先做一个自我介绍，并聊聊你在Java开发方面的核心技术栈和最近的项目经验。',
+  '前端开发工程师': '您好，欢迎参加前端开发工程师的面试。请先做一个自我介绍，并聊聊你最擅长的前端技术栈以及你近期主导的核心项目。',
+  '产品经理': '您好，欢迎参加产品经理的面试。请先做一个自我介绍，并介绍一下你主导过最具代表性的一款产品，以及你在其中的核心贡献。'
+};
+
 Page({
   data: {
     interviewId: '',
@@ -41,7 +47,10 @@ Page({
     const gender = config.voiceGender || 'female';
     this.setData({
       voiceGender: gender,
-      activeInterviewer: gender
+      activeInterviewer: gender,
+      experience: config.experience || 'graduate',
+      style: config.style || 'standard',
+      jobTitle: config.job || 'Java工程师'
     });
     this.initRecorder();
     this.startTimer();
@@ -68,7 +77,14 @@ Page({
   // 面试官提问（核心流程）
   // ────────────────────────────────────────
   askQuestion(index) {
-    const text = AI_QUESTIONS[index % AI_QUESTIONS.length];
+    const config = wx.getStorageSync('interviewConfig') || {};
+    const jobTitle = config.job || 'Java工程师';
+    let text = '';
+    if (index === 0) {
+      text = JOB_FIRST_QUESTIONS[jobTitle] || '您好，欢迎参加面试。请先做一个简单的自我介绍。';
+    } else {
+      text = AI_QUESTIONS[index % AI_QUESTIONS.length];
+    }
     this.addDialogue('ai', text);
     this.setData({ questionIndex: index });
     // 播放面试官语音 TTS
@@ -324,7 +340,10 @@ Page({
       name: 'audio',
       formData: { 
         duration: String(duration),
-        history: JSON.stringify(this.data.dialogues)
+        history: JSON.stringify(this.data.dialogues),
+        experience: this.data.experience || 'graduate',
+        style: this.data.style || 'standard',
+        jobTitle: this.data.jobTitle || 'Java工程师'
       },
       success: (uploadRes) => {
         wx.hideLoading();
