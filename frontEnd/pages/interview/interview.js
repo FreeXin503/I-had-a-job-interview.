@@ -41,7 +41,8 @@ Page({
     // ==========================================
     waveHeights: [20, 20, 20, 20, 20, 20, 20, 20], // 8根拟真声波柱的实时高度百分比
     activeStage: 0, // 当前面试关卡：0=自我介绍, 1=技术问答, 2=项目深挖, 3=压力测试, 4=结束
-    hudScores: { fluency: 0, techMatch: 0, logic: 0 } // HUD 仪表盘动态跑分数据
+    hudScores: { fluency: 0, techMatch: 0, logic: 0 }, // HUD 仪表盘动态跑分数据
+    showTimeline: true // 控制进度轴的显示/隐藏（可通过 prep 页面配置）
   },
 
   // 内部状态（不放 data 避免频繁 setData）
@@ -63,12 +64,14 @@ Page({
 
     const config = wx.getStorageSync('interviewConfig') || {};
     const gender = config.voiceGender || 'female';
+    const showTimeline = config.showTimeline !== undefined ? config.showTimeline : true;
     this.setData({
       voiceGender: gender,
       activeInterviewer: gender,
       experience: config.experience || 'graduate',
       style: config.style || 'standard',
-      jobTitle: config.job || 'Java工程师'
+      jobTitle: config.job || 'Java工程师',
+      showTimeline: showTimeline
     });
     this.initRecorder();
     this.startTimer();
@@ -135,6 +138,7 @@ Page({
     wx.request({
       url: `${app.globalData.apiBaseUrl}/interview/tts`,
       method: 'POST',
+      timeout: 30000,
       data: { text, gender, style },
       success: (res) => {
         if (res.statusCode === 201 && res.data && res.data.base64) {
@@ -611,6 +615,7 @@ Page({
       wx.request({
         url: `${app.globalData.apiBaseUrl}/interview/upload-audio-base64`,
         method: 'POST',
+        timeout: 30000,
         data: {
           audioBase64: base64Audio,
           duration: duration,

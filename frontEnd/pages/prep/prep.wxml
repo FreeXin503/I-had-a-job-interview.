@@ -52,6 +52,15 @@
     </view>
   </view>
 
+  <!-- 关卡进度时间轴选项 -->
+  <view class="prep-section">
+    <view class="prep-section-title">进度时间轴</view>
+    <view class="options-grid gender-grid">
+      <view class="option-pill {{showTimeline ? 'active' : ''}}" bindtap="toggleTimeline" data-value="true">✨ 启用时间轴</view>
+      <view class="option-pill {{!showTimeline ? 'active' : ''}}" bindtap="toggleTimeline" data-value="false">🚫 隐藏时间轴</view>
+    </view>
+  </view>
+
   <!-- 个人简历 -->
   <view class="prep-section">
     <view class="prep-section-title">个人简历</view>

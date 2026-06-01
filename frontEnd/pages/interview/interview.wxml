@@ -9,7 +9,7 @@
   <!-- 视频区域 -->
   <view class="video-pane">
     <!-- 🚀 升级功能二：高透毛玻璃面试关卡进度轴 -->
-    <view class="timeline-container">
+    <view class="timeline-container" wx:if="{{showTimeline}}">
       <view class="timeline-step {{activeStage >= 0 ? 'active' : ''}}">
         <view class="step-dot"></view>
         <text class="step-title">自我介绍</text>

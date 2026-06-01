@@ -12,17 +12,20 @@ Page({
     resumeFileName: '',
     resumeFileId: '',
     pointsBalance: 20,
-    availableMinutes: 2
+    availableMinutes: 2,
+    showTimeline: true // 是否显示关卡时间轴
   },
 
   onLoad() {
     const pointsBalance = app.globalData.pointsBalance;
     const config = wx.getStorageSync('interviewConfig') || {};
     const gender = config.voiceGender || 'female';
+    const showTimeline = config.showTimeline !== undefined ? config.showTimeline : true;
     this.setData({
       pointsBalance: pointsBalance,
       availableMinutes: Math.floor(pointsBalance / 10),
-      voiceGender: gender
+      voiceGender: gender,
+      showTimeline: showTimeline
     });
   },
 
@@ -44,6 +47,14 @@ Page({
   selectVoiceGender(e) {
     this.setData({
       voiceGender: e.currentTarget.dataset.value
+    });
+  },
+
+  // 切换进度轴启用状态
+  toggleTimeline(e) {
+    const value = e.currentTarget.dataset.value === 'true';
+    this.setData({
+      showTimeline: value
     });
   },
 
@@ -113,7 +124,8 @@ Page({
       voiceGender: this.data.voiceGender,
       job: this.data.selectedJob,
       resumeMode: this.data.resumeMode,
-      resumeFileId: this.data.resumeFileId
+      resumeFileId: this.data.resumeFileId,
+      showTimeline: this.data.showTimeline // 存入关卡进度条选项
     };
 
     wx.setStorageSync('interviewConfig', interviewConfig);
