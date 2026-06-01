@@ -34,7 +34,7 @@
   margin: 0 40rpx;
   border-radius: 56rpx;
   overflow: hidden;
-  height: 920rpx;
+  height: 580rpx;
   box-shadow: 0 30rpx 60rpx rgba(0, 0, 0, 0.5);
 }
 
@@ -116,7 +116,7 @@
 
 .dialogue-box {
   flex: 1;
-  max-height: 320rpx;
+  max-height: 520rpx;
 }
 
 .chat-bubble {
