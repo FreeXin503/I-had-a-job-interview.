@@ -356,3 +356,243 @@
   opacity: 0.9;
 }
 
+/* ==========================================
+   🚀 新增四大惊艳升级功能之高级 CSS 动画样式
+   ========================================== */
+
+/* 1. 优化动态声波过渡效果 */
+.voice-waves.active .wave-bar {
+  background-color: #60a5fa;
+  box-shadow: 0 0 8rpx rgba(96, 165, 250, 0.5);
+  animation: none; /* 禁用静态 CSS 循环，完全由 JS 动态计算的 waveHeights 驱动 */
+  transition: height 0.06s linear; /* 微秒级高度过渡，极其润滑 */
+  will-change: height;
+}
+
+/* 2. 玻璃磨砂面试进度关卡轴 */
+.timeline-container {
+  position: absolute;
+  top: 105rpx; /* 避开通话状态徽章与切换角色按钮 */
+  left: 32rpx;
+  right: 32rpx;
+  z-index: 15;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(24rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(24rpx) saturate(180%);
+  border-radius: 24rpx;
+  padding: 16rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex: 1;
+  transition: all 0.3s ease;
+  opacity: 0.35;
+}
+
+.timeline-step.active {
+  opacity: 1;
+}
+
+.step-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #4b5563;
+  border: 4rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.timeline-step.active .step-dot {
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 12rpx #3b82f6;
+  transform: scale(1.2);
+}
+
+.step-title {
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+}
+
+.timeline-step.active .step-title {
+  color: #3b82f6;
+  text-shadow: 0 0 4rpx rgba(59, 130, 246, 0.3);
+}
+
+.timeline-line {
+  height: 4rpx;
+  background: #374151;
+  flex: 1;
+  margin: 0 -12rpx;
+  margin-bottom: 24rpx; /* 对齐圆点中心线 */
+  transition: all 0.3s ease;
+}
+
+.timeline-line.active {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  box-shadow: 0 0 4rpx #3b82f6;
+}
+
+/* 3. 极美背景炫彩呼吸漂浮粒子 */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(10rpx);
+  opacity: 0.25;
+  mix-blend-mode: screen;
+  animation: float-particle 15s ease-in-out infinite alternate;
+  z-index: 2;
+}
+
+.p-1 {
+  width: 40rpx;
+  height: 40rpx;
+  background: radial-gradient(circle, #3b82f6 0%, rgba(59, 130, 246, 0) 80%);
+  top: 15%;
+  left: 20%;
+  animation-duration: 18s;
+}
+
+.p-2 {
+  width: 60rpx;
+  height: 60rpx;
+  background: radial-gradient(circle, #db2777 0%, rgba(219, 39, 119, 0) 80%);
+  top: 45%;
+  right: 15%;
+  animation-duration: 22s;
+  animation-delay: -3s;
+}
+
+.p-3 {
+  width: 30rpx;
+  height: 30rpx;
+  background: radial-gradient(circle, #10b981 0%, rgba(16, 185, 129, 0) 80%);
+  bottom: 25%;
+  left: 15%;
+  animation-duration: 14s;
+  animation-delay: -5s;
+}
+
+.p-4 {
+  width: 50rpx;
+  height: 50rpx;
+  background: radial-gradient(circle, #f59e0b 0%, rgba(245, 158, 11, 0) 80%);
+  bottom: 15%;
+  right: 35%;
+  animation-duration: 25s;
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-40rpx) translateX(30rpx) scale(1.2);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(20rpx) translateX(-20rpx) scale(0.9);
+    opacity: 0.20;
+  }
+}
+
+/* 4. AI 即时评估 HUD 仪表盘 */
+.hud-dashboard {
+  display: none;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(30rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(30rpx) saturate(180%);
+  border-radius: 32rpx;
+  padding: 24rpx 36rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.3);
+  flex-direction: column;
+  gap: 20rpx;
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.hud-dashboard.visible {
+  display: flex;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(30rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.hud-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hud-label {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 1rpx;
+}
+
+.hud-value-text {
+  font-size: 24rpx;
+  font-family: monospace;
+  font-weight: bold;
+  color: #3b82f6;
+  text-shadow: 0 0 8rpx rgba(59, 130, 246, 0.4);
+}
+
+.hud-bar-wrapper {
+  height: 10rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.hud-bar-fill {
+  height: 100%;
+  border-radius: 5rpx;
+  transition: width 0.1s linear;
+  will-change: width;
+}
+
+.hud-bar-fill.fluency {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  box-shadow: 0 0 10rpx rgba(59, 130, 246, 0.5);
+}
+
+.hud-bar-fill.tech {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  box-shadow: 0 0 10rpx rgba(16, 185, 129, 0.5);
+}
+
+.hud-bar-fill.logic {
+  background: linear-gradient(90deg, #db2777, #f472b6);
+  box-shadow: 0 0 10rpx rgba(219, 39, 119, 0.5);
+}
+

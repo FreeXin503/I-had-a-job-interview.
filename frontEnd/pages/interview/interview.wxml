@@ -8,6 +8,34 @@
 
   <!-- 视频区域 -->
   <view class="video-pane">
+    <!-- 🚀 升级功能二：高透毛玻璃面试关卡进度轴 -->
+    <view class="timeline-container">
+      <view class="timeline-step {{activeStage >= 0 ? 'active' : ''}}">
+        <view class="step-dot"></view>
+        <text class="step-title">自我介绍</text>
+      </view>
+      <view class="timeline-line {{activeStage >= 1 ? 'active' : ''}}"></view>
+      <view class="timeline-step {{activeStage >= 1 ? 'active' : ''}}">
+        <view class="step-dot"></view>
+        <text class="step-title">技术基础</text>
+      </view>
+      <view class="timeline-line {{activeStage >= 2 ? 'active' : ''}}"></view>
+      <view class="timeline-step {{activeStage >= 2 ? 'active' : ''}}">
+        <view class="step-dot"></view>
+        <text class="step-title">项目深挖</text>
+      </view>
+      <view class="timeline-line {{activeStage >= 3 ? 'active' : ''}}"></view>
+      <view class="timeline-step {{activeStage >= 3 ? 'active' : ''}}">
+        <view class="step-dot"></view>
+        <text class="step-title">压力测试</text>
+      </view>
+      <view class="timeline-line {{activeStage >= 4 ? 'active' : ''}}"></view>
+      <view class="timeline-step {{activeStage >= 4 ? 'active' : ''}}">
+        <view class="step-dot"></view>
+        <text class="step-title">自由提问</text>
+      </view>
+    </view>
+
     <!-- 2D写实形象展示 -->
     <view class="interviewer-avatar-container">
       <!-- 极美毛玻璃与环境氛围背景图底层 (公司办公室毛玻璃背景) -->
@@ -16,9 +44,14 @@
         <view class="frosted-overlay"></view>
         <view class="ambient-glow glow-1"></view>
         <view class="ambient-glow glow-2"></view>
+        <!-- 🚀 升级功能四：炫彩微动呼吸漂浮粒子 -->
+        <view class="particle p-1"></view>
+        <view class="particle p-2"></view>
+        <view class="particle p-3"></view>
+        <view class="particle p-4"></view>
       </view>
 
-      <!-- 女生面试官 (双层重叠 5 帧平滑渐变嘴型) -->
+      <!-- 女生面试官 (双层重叠 10 帧平滑渐变嘴型) -->
       <view wx:if="{{activeInterviewer === 'female'}}" class="interviewer-image-wrapper">
         <image 
           class="interviewer-image base" 
@@ -33,7 +66,7 @@
         />
       </view>
 
-      <!-- 男生面试官 (双层重叠 5 帧平滑渐变嘴型) -->
+      <!-- 男生面试官 (双层重叠 10 帧平滑渐变嘴型) -->
       <view wx:if="{{activeInterviewer === 'male'}}" class="interviewer-image-wrapper">
         <image 
           class="interviewer-image base" 
@@ -72,25 +105,59 @@
 
   <!-- 对话区域 -->
   <view class="chat-area">
+    <!-- 🚀 升级功能三：AI 瞬时反馈 HUD 科技跑分仪表盘 -->
+    <view class="hud-dashboard {{hudScores.fluency > 0 ? 'visible' : ''}}">
+      <view class="hud-item">
+        <view class="hud-info">
+          <text class="hud-label">🗣️ 表达流畅</text>
+          <text class="hud-value-text">{{hudScores.fluency}}%</text>
+        </view>
+        <view class="hud-bar-wrapper">
+          <view class="hud-bar-fill fluency" style="width: {{hudScores.fluency}}%"></view>
+        </view>
+      </view>
+      
+      <view class="hud-item">
+        <view class="hud-info">
+          <text class="hud-label">💻 核心匹配</text>
+          <text class="hud-value-text">{{hudScores.techMatch}}%</text>
+        </view>
+        <view class="hud-bar-wrapper">
+          <view class="hud-bar-fill tech" style="width: {{hudScores.techMatch}}%"></view>
+        </view>
+      </view>
+      
+      <view class="hud-item">
+        <view class="hud-info">
+          <text class="hud-label">🧠 逻辑严谨</text>
+          <text class="hud-value-text">{{hudScores.logic}}%</text>
+        </view>
+        <view class="hud-bar-wrapper">
+          <view class="hud-bar-fill logic" style="width: {{hudScores.logic}}%"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 问答对话列表 -->
     <scroll-view class="dialogue-box" scroll-y scroll-into-view="msg-{{dialogues.length - 1}}">
       <view class="chat-bubble {{item.type}}" wx:for="{{dialogues}}" wx:key="index" id="msg-{{index}}">
         <text>{{item.text}}</text>
       </view>
     </scroll-view>
 
-    <!-- 语音波形 -->
-    <view class="voice-waves {{waveActive ? 'active' : ''}}">
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
-      <view class="wave-bar"></view>
+    <!-- 🚀 升级功能一：绑定动态高度与能量起伏的拟真声波 -->
+    <view class="voice-waves {{waveActive || isAISpeaking ? 'active' : ''}}">
+      <view class="wave-bar" style="height: {{waveHeights[0] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[1] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[2] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[3] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[4] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[5] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[6] || 20}}%;"></view>
+      <view class="wave-bar" style="height: {{waveHeights[7] || 20}}%;"></view>
     </view>
 
-    <!-- 录音按钮 -->
+    <!-- 录音与操作按键区 -->
     <view class="action-buttons">
       <button 
         class="record-btn {{isRecording ? 'recording' : ''}}" 

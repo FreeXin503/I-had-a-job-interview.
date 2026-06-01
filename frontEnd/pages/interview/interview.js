@@ -35,11 +35,19 @@ Page({
     activeInterviewer: 'female',
     femaleName: '王雅琪 (资深HR)',
     maleName: '张睿达 (技术主考官)',
-    speakFrame: false
+    speakOpacity: 0.0,
+    // ==========================================
+    // 🚀 新增四大惊艳升级功能之数据源绑定
+    // ==========================================
+    waveHeights: [20, 20, 20, 20, 20, 20, 20, 20], // 8根拟真声波柱的实时高度百分比
+    activeStage: 0, // 当前面试关卡：0=自我介绍, 1=技术问答, 2=项目深挖, 3=压力测试, 4=结束
+    hudScores: { fluency: 0, techMatch: 0, logic: 0 } // HUD 仪表盘动态跑分数据
   },
 
   // 内部状态（不放 data 避免频繁 setData）
   speakInterval: null,
+  waveTimer: null,
+  hudInterval: null,
   audioContext: null,
 
   onLoad() {
@@ -371,6 +379,19 @@ Page({
       
       this.setData({ speakOpacity: nextOpacity });
       
+      // 🚀 新增升级功能一：AI 说话时，声波起伏高度与嘴型开合透明度完美数学绑定，极富表现力！
+      const newHeights = this.data.waveHeights.map((h, i) => {
+        if (nextOpacity === 0.0) {
+          // 闭口换气时，声波收窄回落至低频呼吸波（高度 10% ~ 22% 之间微颤）
+          return Math.floor(10 + Math.random() * 12);
+        } else {
+          // 张口发声时，声波跳跃幅度按比例扩大（正比于嘴型张大百分比）
+          const maxAmp = 40 + Math.random() * 50; // 每根声波的最大随机分贝
+          return Math.floor(nextOpacity * maxAmp + 15);
+        }
+      });
+      this.setData({ waveHeights: newHeights });
+      
       // 由于升级到了 10 档过渡，每阶的递进延迟缩短至 55ms ~ 75ms
       // 使得一次完整的“张口 + 闭口”音节吞吐周期历时约 1000ms ~ 1250ms，极其平滑且符合真人沉稳慢速的说话语速
       const stepDelay = 55 + Math.random() * 20;
@@ -386,7 +407,10 @@ Page({
       clearTimeout(this.speakInterval);
       this.speakInterval = null;
     }
-    this.setData({ speakOpacity: 0.0 });
+    this.setData({ 
+      speakOpacity: 0.0,
+      waveHeights: [20, 20, 20, 20, 20, 20, 20, 20] // 重置声波高度回静止状态
+    });
   },
 
   // ────────────────────────────────────────
@@ -516,6 +540,27 @@ Page({
     }
   },
 
+  startUserWaveAnimation() {
+    if (this.waveTimer) clearInterval(this.waveTimer);
+    this.waveTimer = setInterval(() => {
+      const newHeights = this.data.waveHeights.map((h, i) => {
+        // 运用正弦曲线配合随机分贝噪声，营造真实、动感错落的声波跳跃感
+        const sine = Math.sin(Date.now() / 120 + i * 0.8) * 35;
+        const noise = Math.random() * 45;
+        return Math.max(12, Math.min(98, Math.floor(45 + sine + noise)));
+      });
+      this.setData({ waveHeights: newHeights });
+    }, 60);
+  },
+
+  stopUserWaveAnimation() {
+    if (this.waveTimer) {
+      clearInterval(this.waveTimer);
+      this.waveTimer = null;
+    }
+    this.setData({ waveHeights: [20, 20, 20, 20, 20, 20, 20, 20] });
+  },
+
   doStartRecording() {
     if (this.data.isRecording || this.isRecordingStarted) {
       console.warn('检测到已经在录音中，阻止重复调用 doStartRecording');
@@ -524,6 +569,7 @@ Page({
     try {
       this.isRecordingStarted = true;
       this.setData({ isRecording: true, waveActive: true });
+      this.startUserWaveAnimation(); // 🚀 开启用户说话实时声波震荡
       recorderManager.start({
         duration: 60000,
         sampleRate: 16000,
@@ -533,6 +579,7 @@ Page({
     } catch (err) {
       console.error('[录音] 启动失败', err);
       this.isRecordingStarted = false;
+      this.stopUserWaveAnimation(); // 🚀 异常回滚
       this.setData({ isRecording: false, waveActive: false });
       wx.showToast({ title: '启动录音失败', icon: 'none' });
     }
@@ -540,6 +587,7 @@ Page({
 
   stopRecording() {
     this.isRecordingStarted = false;
+    this.stopUserWaveAnimation(); // 🚀 录音结束，重置声波
     recorderManager.stop();
   },
 
@@ -614,11 +662,77 @@ Page({
   // 用户回答完成后的流程
   onUserAnswered(text, nextQuestion) {
     this.addDialogue('user', text);
+    
+    // 🚀 新增升级功能二：动态计算当前面试关卡进度并高亮时间轴
+    const turnCount = this.data.dialogues.length;
+    let stage = 0;
+    if (turnCount <= 2) {
+      stage = 0; // 自我介绍 (第 1 轮)
+    } else if (turnCount <= 4) {
+      stage = 1; // 技术基础 (第 2 轮)
+    } else if (turnCount <= 6) {
+      stage = 2; // 项目深挖 (第 3 轮)
+    } else if (turnCount <= 8) {
+      stage = 3; // 压力测试 (第 4 轮)
+    } else {
+      stage = 4; // 自由提问 / 结束
+    }
+    
+    this.setData({ activeStage: stage });
+    
+    // 🚀 新增升级功能三：触发 AI 瞬时反馈 HUD 仪表盘动态滚动跑分特效
+    this.animateHudScores();
+
     // 稍等片刻，面试官再提下一个动态思考产生的问题
     setTimeout(() => {
       this.addDialogue('ai', nextQuestion);
       this.playTTS(nextQuestion);
     }, 800);
+  },
+
+  animateHudScores() {
+    const targetFluency = Math.floor(86 + Math.random() * 11); // 86% ~ 96%
+    const targetTech = Math.floor(85 + Math.random() * 12);    // 85% ~ 96%
+    const targetLogic = Math.floor(88 + Math.random() * 9);     // 88% ~ 96%
+    
+    let currentFluency = 0;
+    let currentTech = 0;
+    let currentLogic = 0;
+    
+    if (this.hudInterval) clearInterval(this.hudInterval);
+    
+    this.hudInterval = setInterval(() => {
+      let isDone = true;
+      
+      if (currentFluency < targetFluency) {
+        currentFluency += Math.ceil((targetFluency - currentFluency) / 8);
+        if (currentFluency > targetFluency) currentFluency = targetFluency;
+        isDone = false;
+      }
+      
+      if (currentTech < targetTech) {
+        currentTech += Math.ceil((targetTech - currentTech) / 8);
+        if (currentTech > targetTech) currentTech = targetTech;
+        isDone = false;
+      }
+      
+      if (currentLogic < targetLogic) {
+        currentLogic += Math.ceil((targetLogic - currentLogic) / 8);
+        if (currentLogic > targetLogic) currentLogic = targetLogic;
+        isDone = false;
+      }
+      
+      this.setData({
+        'hudScores.fluency': currentFluency,
+        'hudScores.techMatch': currentTech,
+        'hudScores.logic': currentLogic
+      });
+      
+      if (isDone) {
+        clearInterval(this.hudInterval);
+        this.hudInterval = null;
+      }
+    }, 25);
   },
 
   // 按对话轮次返回模拟答案（真实感强）
