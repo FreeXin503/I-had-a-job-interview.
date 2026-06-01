@@ -105,39 +105,6 @@
 
   <!-- 对话区域 -->
   <view class="chat-area">
-    <!-- 🚀 升级功能三：AI 瞬时反馈 HUD 科技跑分仪表盘 -->
-    <view class="hud-dashboard {{hudScores.fluency > 0 ? 'visible' : ''}}">
-      <view class="hud-item">
-        <view class="hud-info">
-          <text class="hud-label">🗣️ 表达流畅</text>
-          <text class="hud-value-text">{{hudScores.fluency}}%</text>
-        </view>
-        <view class="hud-bar-wrapper">
-          <view class="hud-bar-fill fluency" style="width: {{hudScores.fluency}}%"></view>
-        </view>
-      </view>
-      
-      <view class="hud-item">
-        <view class="hud-info">
-          <text class="hud-label">💻 核心匹配</text>
-          <text class="hud-value-text">{{hudScores.techMatch}}%</text>
-        </view>
-        <view class="hud-bar-wrapper">
-          <view class="hud-bar-fill tech" style="width: {{hudScores.techMatch}}%"></view>
-        </view>
-      </view>
-      
-      <view class="hud-item">
-        <view class="hud-info">
-          <text class="hud-label">🧠 逻辑严谨</text>
-          <text class="hud-value-text">{{hudScores.logic}}%</text>
-        </view>
-        <view class="hud-bar-wrapper">
-          <view class="hud-bar-fill logic" style="width: {{hudScores.logic}}%"></view>
-        </view>
-      </view>
-    </view>
-
     <!-- 问答对话列表 -->
     <scroll-view class="dialogue-box" scroll-y scroll-into-view="msg-{{dialogues.length - 1}}">
       <view class="chat-bubble {{item.type}}" wx:for="{{dialogues}}" wx:key="index" id="msg-{{index}}">
